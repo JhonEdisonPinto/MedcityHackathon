@@ -13,7 +13,7 @@ class GroqSettings:
     api_key: str
     model_name: str = "openai/gpt-oss-120b"
     temperature: float = 0.1
-    max_tokens: int = 2000
+    max_tokens: int = 10000
     request_timeout: float = 60.0
     max_retries: int = 2
 
