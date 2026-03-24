@@ -605,12 +605,43 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
         f"{formato_respuesta}"
     )
 
+    def _needs_continuation(text: str, finish_reason: str | None) -> bool:
+        if not text:
+            return False
+        if finish_reason and str(finish_reason).lower() in {"length", "max_tokens"}:
+            return True
+        trimmed = text.rstrip()
+        # Mid-word or missing sentence closure is a strong truncation signal.
+        if not trimmed:
+            return False
+        if trimmed[-1].isalnum() and len(trimmed.split()) > 40 and not trimmed.endswith((".", "?", "!", ":")):
+            return True
+        return False
+
     try:
         cfg = GroqSettings.from_env()
         llm = build_groq_llm(cfg)
         print(f"  [llm] Enviando a {cfg.model_name}...")
         response = llm.invoke([HumanMessage(content=prompt)])
         answer = str(response.content).strip()
+
+        finish_reason = None
+        try:
+            finish_reason = (response.response_metadata or {}).get("finish_reason")
+        except Exception:
+            finish_reason = None
+
+        if _needs_continuation(answer, finish_reason):
+            continuation_prompt = (
+                "Continua EXACTAMENTE desde donde te quedaste, sin repetir contenido. "
+                "Completa toda la estructura solicitada y cierra con la línea de fuente.\n\n"
+                f"RESPUESTA PARCIAL:\n{answer}"
+            )
+            response_2 = llm.invoke([HumanMessage(content=continuation_prompt)])
+            answer_2 = str(response_2.content).strip()
+            if answer_2:
+                answer = f"{answer}\n{answer_2}".strip()
+
         print(f"  [llm] Respuesta generada ({len(answer)} chars)")
     except Exception as e:
         print(f"  [llm] Fallback sin LLM: {e}")
