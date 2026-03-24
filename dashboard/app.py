@@ -106,7 +106,7 @@ with tab_dash:
             margin=dict(l=10, r=10, t=10, b=10),
         )
         fig_bar.update_traces(textposition="outside")
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_bar, width="stretch")
 
     with col2:
         st.subheader("Distribución de edad WiFi")
@@ -123,7 +123,7 @@ with tab_dash:
             legend=dict(orientation="h", yanchor="bottom", y=-0.2),
         )
         fig_dona.update_traces(textinfo="percent+label", textposition="outside")
-        st.plotly_chart(fig_dona, use_container_width=True)
+        st.plotly_chart(fig_dona, width="stretch")
 
     st.divider()
 
@@ -150,7 +150,7 @@ with tab_dash:
         )
         fig_dens.update_xaxes(tickangle=45)
         fig_dens.update_traces(textposition="outside")
-        st.plotly_chart(fig_dens, use_container_width=True)
+        st.plotly_chart(fig_dens, width="stretch")
 
     with col4:
         st.subheader("Género de emprendedores")
@@ -168,7 +168,7 @@ with tab_dash:
             margin=dict(l=10, r=10, t=10, b=10),
         )
         fig_sexo.update_traces(textinfo="percent+value")
-        st.plotly_chart(fig_sexo, use_container_width=True)
+        st.plotly_chart(fig_sexo, width="stretch")
 
     st.divider()
 
@@ -200,7 +200,7 @@ with tab_dash:
             margin=dict(l=10, r=10, t=10, b=10),
         )
         fig_tipo.update_traces(textposition="outside")
-        st.plotly_chart(fig_tipo, use_container_width=True)
+        st.plotly_chart(fig_tipo, width="stretch")
 
     with col6:
         st.subheader("Distribución por estrato socioeconómico")
@@ -230,7 +230,7 @@ with tab_dash:
             margin=dict(l=10, r=10, t=10, b=10),
         )
         fig_estrato.update_traces(textposition="outside")
-        st.plotly_chart(fig_estrato, use_container_width=True)
+        st.plotly_chart(fig_estrato, width="stretch")
 
     st.divider()
 
@@ -269,7 +269,7 @@ with tab_dash:
         margin=dict(l=10, r=10, t=10, b=10),
     )
     fig_scatter.update_traces(textposition="top center", textfont_size=9)
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    st.plotly_chart(fig_scatter, width="stretch")
 
     # ── Fila 5: Cabeza de hogar + Zona ────────────────────────────────────────
     col7, col8 = st.columns(2)
@@ -290,7 +290,7 @@ with tab_dash:
             margin=dict(l=10, r=10, t=10, b=10),
         )
         fig_cabeza.update_traces(textinfo="percent+value")
-        st.plotly_chart(fig_cabeza, use_container_width=True)
+        st.plotly_chart(fig_cabeza, width="stretch")
 
     with col8:
         st.subheader("Emprendedores por zona geográfica")
@@ -315,7 +315,7 @@ with tab_dash:
             margin=dict(l=10, r=10, t=10, b=10),
         )
         fig_zona.update_traces(textposition="outside")
-        st.plotly_chart(fig_zona, use_container_width=True)
+        st.plotly_chart(fig_zona, width="stretch")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
