@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Literal, TypedDict
 from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START, StateGraph
 
-from config import GroqSettings, build_groq_llm
+from config import GroqSettings, build_groq_llm, retrieve_rag_context
 
 Intent = Literal[
     "caracterizar_zona",
@@ -93,8 +93,35 @@ def solicitar_filtro(state: MedCityState) -> MedCityState:
 
 
 def recuperar_datos(state: MedCityState) -> MedCityState:
-    # Nodo placeholder: conecta aquí tu consulta real a parquet/sql/rag store.
+    # Attempt retrieval from configured Chroma store; fallback to local mock data.
     zone = state.get("zone", "sin_zona")
+    intent = state.get("intent", "desconocida")
+    query = state.get("user_query", "")
+
+    rag_query = f"intencion={intent}; zona={zone}; consulta={query}"
+
+    try:
+        rag_items = retrieve_rag_context(rag_query)
+    except Exception:
+        rag_items = []
+
+    if rag_items:
+        records: List[Dict[str, Any]] = []
+        for item in rag_items:
+            metadata = item.get("metadata") or {}
+            records.append(
+                {
+                    "zone": metadata.get("zone", zone),
+                    "emprendedores": metadata.get("emprendedores", 0),
+                    "tipo_dominante": metadata.get("tipo_dominante", "sin_datos"),
+                    "credito_promedio": metadata.get("credito_promedio", 0),
+                    "trafico_wifi": metadata.get("trafico_wifi", 0),
+                    "document": item.get("document", ""),
+                    "distance": item.get("distance"),
+                }
+            )
+        return {"retrieved_records": records, "sources": ["chroma_rag"]}
+
     records = [
         {
             "zone": zone,
