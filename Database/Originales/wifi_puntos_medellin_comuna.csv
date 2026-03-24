@@ -1,0 +1,373 @@
+comuna,barrio,sede
+Comuna 1,Popular,Parque de Guadalupe
+Comuna 1,Popular,Unidad Deportiva Granizal
+Comuna 1,Popular,Plazoleta Entre I.E. Antonio Derka y la I.E. Santo Domingo Savio
+Comuna 1,Popular,CVS Popular (CEDEZO Santo Domingo)
+Comuna 1,Popular,Plazoleta Estación Metrocable Popular 1 (exterior)
+Comuna 1,Popular,Casa de Justicia Santo Domingo
+Comuna 1,Popular,Centro de Salud Carpinelo
+Comuna 1,Popular,Centro de Salud Santo Domingo Savio
+Comuna 1,Popular,Plazoleta Estación Santo Domingo Metrocable (exterior)
+Comuna 1,Popular,Parque La Candelaria
+Comuna 1,Popular,Cancha de Futbol el Rompoy Popular N1
+Comuna 1,Popular,Parque Lineal La Herrera Santo Domingo
+Comuna 1,Popular,Plazoleta Granizal
+Comuna 1,Popular,Parque Fe y Alegría
+Comuna 1,Popular,Cancha el compromiso
+Comuna 2,Santa Cruz,Casa de Justicia Villa del Socorro
+Comuna 2,Santa Cruz,Parque la torre Belalcázar
+Comuna 2,Santa Cruz,UPSS Santa Cruz
+Comuna 2,Santa Cruz,Centro de Salud Pablo VI
+Comuna 2,Santa Cruz,Parque Pablo VI
+Comuna 2,Santa Cruz,Cancha Sintética Villa del Socorro
+Comuna 2,Santa Cruz,Coliseo Andalucía
+Comuna 2,Santa Cruz,CEDEZO Santa Cruz
+Comuna 2,Santa Cruz,Cancha de Fútbol La Frontera
+Comuna 2,Santa Cruz,Barrio Sinaí
+Comuna 2,Santa Cruz,Parque la Isla
+Comuna 2,Santa Cruz,Cancha polideportiva la isla
+Comuna 3,Manrique,CVS Manrique (CEDEZO Manrique)
+Comuna 3,Manrique,Unidad Deportiva San Blas
+Comuna 3,Manrique,Unidad Deportiva El Raizal
+Comuna 3,Manrique,Centro de Salud La Cruz
+Comuna 3,Manrique,Centro de Salud San Blas
+Comuna 3,Manrique,Centro de Salud El Raizal
+Comuna 3,Manrique,Parque Gaitán
+Comuna 3,Manrique,Estación Gardel Metroplus (exterior)
+Comuna 3,Manrique,La Honda
+Comuna 3,Manrique,La Cruz
+Comuna 3,Manrique,Ampliación La Honda
+Comuna 3,Manrique,Centralidad Versalles N° 2
+Comuna 3,Manrique,Ruta De La Memoria – Unidad Deportiva Santa Ines
+Comuna 4,Aranjuez,Centro Cultural Moravia
+Comuna 4,Aranjuez,Jardín Botánico
+Comuna 4,Aranjuez,Parque Aranjuez
+Comuna 4,Aranjuez,Parque de los deseos
+Comuna 4,Aranjuez,Parque Explora
+Comuna 4,Aranjuez,Parque Norte
+Comuna 4,Aranjuez,Parque Principal Campo Valdés (El Calvario)
+Comuna 4,Aranjuez,Inspección Aranjuez
+Comuna 4,Aranjuez,Hospital Infantil Concejo de Medellín
+Comuna 4,Aranjuez,Parque Berlín (contiguo estación Berlín Metro)
+Comuna 4,Aranjuez,Estación Metro Universidad (interior torniquete acceso Parque Explora)
+Comuna 4,Aranjuez,Ampliación Museo Cementerio San Pedro
+Comuna 4,Aranjuez,Cancha de Fútbol en Grama Sintética San Nicolás
+Comuna 4,Aranjuez,Cancha Sintética Las Esmeraldas
+Comuna 4,Aranjuez,Parque Norte Zona Infantil
+Comuna 4,Aranjuez,Placa Polideportiva Moravia
+Comuna 4,Aranjuez,Parque la Piñuela
+Comuna 4,Aranjuez,Parque Madre Laura Aranjuez
+Comuna 4,Aranjuez,Cancha San Isidro
+Comuna 5,Castilla,Parque Florencia
+Comuna 5,Castilla,Parque Juanes de la Paz
+Comuna 5,Castilla,Pista de Patinaje Francisco Antonio Zea
+Comuna 5,Castilla,Secretaría de Movilidad (Oficina Castilla)
+Comuna 5,Castilla,Terminal del Norte
+Comuna 5,Castilla,Parque Girardot
+Comuna 5,Castilla,CAV Parque Juanes de la Paz
+Comuna 5,Castilla,UPSS Castilla
+Comuna 5,Castilla,Centro de Salud Alfonso López
+Comuna 5,Castilla,Unidad Deportiva Tricentenario
+Comuna 5,Castilla,Placa Divino Niño
+Comuna 5,Castilla,Unidad Deportiva José René Higuita
+Comuna 5,Castilla,Mascerca Castilla
+Comuna 5,Castilla,Cancha la María
+Comuna 5,Castilla,Cancha la Tinaja
+Comuna 5,Castilla,Plazoleta Estación Metro Caribe (exterior cancha Polideportiva Moravia Caribe)
+Comuna 5,Castilla,Estación Metro Acevedo (interior)
+Comuna 5,Castilla,Ampliacion 1 Estación Metro Caribe Costado Norte (exterior torniquetes)
+Comuna 5,Castilla,Ampliacion 2 Estación Metro Caribe Costado Sur (exterior torniquetes)
+Comuna 5,Castilla,Cancha Alfonso López
+Comuna 5,Castilla,Cancha polideportiva Boyacá (se traslada de Pista de BMX Mariana Pajón)
+Comuna 5,Castilla,Placa Polideportiva Brisas del Norte
+Comuna 5,Castilla,Cancha de Fútbol Boyacá
+Comuna 5,Castilla,Placa polideportiva La Playita
+Comuna 5,Castilla,Parque Alfonso López
+Comuna 5,Castilla,Parque las Brisas
+Comuna 5,Castilla,Parque las Iguanas
+Comuna 5,Castilla,Tricentenario-Parque de Banderas
+Comuna 5,Castilla,Parque Iglesia Tricentenario
+Comuna 5,Castilla,Parque La Torre Belalcázar
+Comuna 5,Castilla,Parque de los abuelos
+Comuna 5,Castilla,Huerta de Vilma
+Comuna 5,Castilla,Parque sendero de la orquídeas
+Comuna 5,Castilla,Parque Skate Castilla
+Comuna 5,Castilla,Parque Israel Florencia
+Comuna 5,Castilla,Parque Gratamira
+Comuna 5,Castilla,CVS Castilla
+Comuna 6,Doce de Octubre,Unidad Deportiva Doce de Octubre
+Comuna 6,Doce de Octubre,Centralidad Deportiva El Progreso N°2
+Comuna 6,Doce de Octubre,Teatro al Aire Libre y Parque El Pedregal
+Comuna 6,Doce de Octubre,UPSS Doce de Octubre
+Comuna 6,Doce de Octubre,Parque Kennedy
+Comuna 6,Doce de Octubre,Casa de La Cultura Pedregal
+Comuna 6,Doce de Octubre,Centro de Salud Picachito
+Comuna 6,Doce de Octubre,Inspección N°6 Doce de Octubre
+Comuna 6,Doce de Octubre,Parque deportivo y recreativo La Tinajita
+Comuna 6,Doce de Octubre,Cancha Sintética La Maracaná
+Comuna 6,Doce de Octubre,Cancha Sintética el Polvorín
+Comuna 6,Doce de Octubre,Placa Polideportiva los Lotes
+Comuna 6,Doce de Octubre,Parque los Jubilados
+Comuna 6,Doce de Octubre,Estación Metrocable El Progreso
+Comuna 6,Doce de Octubre,Pista de Patinaje 12 de Octubre
+Comuna 7,Robledo,Casa de Justicia de Robledo
+Comuna 7,Robledo,Institución Universitaria Pascual Bravo
+Comuna 7,Robledo,CVS Robledo – La Quintana (Cedezo La Quintana)
+Comuna 7,Robledo,Biblioteca Tomás Carrasquilla Centro de Salud San Camilo
+Comuna 7,Robledo,Estacion Metrocable 12 de Octubre (se trasladó de Casa de la Cultura Ávila)
+Comuna 7,Robledo,Centro de Servicios Robledo Inspección 7 A
+Comuna 7,Robledo,Cerro El Volador
+Comuna 7,Robledo,Parque de Robledo
+Comuna 7,Robledo,Parque La Pilarica
+Comuna 7,Robledo,Ampliación Parque La Pilarica
+Comuna 7,Robledo,Pista de patinaje La Quintana
+Comuna 7,Robledo,Placa Polideportiva Romeral
+Comuna 7,Robledo,Placa Polideportiva Don Bosco
+Comuna 7,Robledo,Parque la Cruz
+Comuna 7,Robledo,Cancha Pajarito
+Comuna 8,Villa Hermosa,Desarrollo Integral Las Estancias
+Comuna 8,Villa Hermosa,Ecoparque Esfuerzos de Paz – Las Tinajas
+Comuna 8,Villa Hermosa,Ecoparque Campo Santo de Villatina
+Comuna 8,Villa Hermosa,Centro de Salud Villatina
+Comuna 8,Villa Hermosa,CVS Villa Hermosa (CEDEZO La Ladera)
+Comuna 8,Villa Hermosa,Parque Principal Villa Hermosa
+Comuna 8,Villa Hermosa,Centro de Salud Llanaditas
+Comuna 8,Villa Hermosa,Plazoleta Estación Las Torres Metrocable (exterior)
+Comuna 8,Villa Hermosa,Plazoleta Estación Villa Sierra Metrocable (exterior)
+Comuna 8,Villa Hermosa,Parque la Batea del barrio Villatina
+Comuna 8,Villa Hermosa,Placa Cubierta La Sierra
+Comuna 8,Villa Hermosa,Plazoleta Trece de Noviembre
+Comuna 8,Villa Hermosa,Plazoleta Colinas de Enciso parte alta
+Comuna 8,Villa Hermosa,Cancha Polideportiva Sucre
+Comuna 8,Villa Hermosa,Cancha Polideportiva la Libertad
+Comuna 8,Villa Hermosa,Cancha La Mansión
+Comuna 8,Villa Hermosa,Gimnasio La Mansión
+Comuna 9,Buenos Aires,Parque La Milagrosa
+Comuna 9,Buenos Aires,Unidad Deportiva Miraflores
+Comuna 9,Buenos Aires,Unidad Deportiva Alejandro Echavarría
+Comuna 9,Buenos Aires,Inspección 9B
+Comuna 9,Buenos Aires,Estación Oriente Tranvía (interior)
+Comuna 9,Buenos Aires,Parque Cerro El Cristo Salvador
+Comuna 9,Buenos Aires,Parque Recreativo Barrios de Jesús
+Comuna 9,Buenos Aires,Parque Caunces de Oriente
+Comuna 9,Buenos Aires,Cancha Loreto (se traslada de Morro de Moravia)
+Comuna 9,Buenos Aires,Cancha la Esmeralda (Loreto)
+Comuna 9,Buenos Aires,Estación Metro Buenos Aires Tranvía – MTR (interior plataforma abordaje)
+Comuna 9,Buenos Aires,Placa Polideportiva la Pastora
+Comuna 9,Buenos Aires,Parque El Salvador
+Comuna 9,Buenos Aires,Cerro La Asomadera
+Comuna 9,Buenos Aires,El Hormiguero
+Comuna 9,Buenos Aires,Cancha de futbol Caunces de Oriente
+Comuna 10,La Candelaria,Centro de Integración Afrocolombiano
+Comuna 10,La Candelaria,Concejo de Medellín (Recinto)
+Comuna 10,La Candelaria,Banco de las oportunidades – Sótano Centro administrativo la Alpujarra / Parque Berrío
+Comuna 10,La Candelaria,Parque Bicentenario
+Comuna 10,La Candelaria,Parque Bolívar
+Comuna 10,La Candelaria,Parque de Los Pies Descalzos
+Comuna 10,La Candelaria,Parque San Antonio
+Comuna 10,La Candelaria,Plazoleta de Cisneros (Parque de las Luces)
+Comuna 10,La Candelaria,Plazoleta La Alpujarra (Centro Administrativo)
+Comuna 10,La Candelaria,Tesorería Municipal (Oficina CAM) Edificio Alcaldía – Piso 1
+Comuna 10,La Candelaria,Parque de Boston
+Comuna 10,La Candelaria,Parque del Periodista
+Comuna 10,La Candelaria,Plazuela San Ignacio
+Comuna 10,La Candelaria,Centro de Salud San Lorenzo
+Comuna 10,La Candelaria,Centro de Servicio al Ciudadano (CAM) Sótano Centro administrativo la Alpujarra
+Comuna 10,La Candelaria,Hospital General de Medellín
+Comuna 10,La Candelaria,Plaza Botero (Museo de Antioquia)
+Comuna 10,La Candelaria,Parque de la Vida (Centro)
+Comuna 10,La Candelaria,Inspección 10B
+Comuna 10,La Candelaria,Por mis derechos – Por una Vida Más Digna (Oficina La Candelaria)
+Comuna 10,La Candelaria,Estación Tranvía San Antonio – Plazoleta de Abordaje (exterior)
+Comuna 10,La Candelaria,Estación Metro Parque Berrío
+Comuna 10,La Candelaria,Estación Tranvía Pabellón del Agua EPM (exterior)
+Comuna 10,La Candelaria,Estación Hospital Metroplús (interior)
+Comuna 10,La Candelaria,Plaza Mayor – Plazoleta Interamericana
+Comuna 10,La Candelaria,Registraduría (Torres de Bomboná)
+Comuna 10,La Candelaria,La Playa (Teatro Pablo Tobón)
+Comuna 10,La Candelaria,Perpetuo Socorro
+Comuna 10,La Candelaria,Parque Obrero
+Comuna 10,La Candelaria,Estación Metro San Antonio 1 – MTR (interior plataforma abordaje linea A)
+Comuna 10,La Candelaria,Estación Metro San Antonio 2 – MTR (interior plataforma abordaje linea B)
+Comuna 10,La Candelaria,Estación Metro Parque Berrio – MTR (interior acceso torniquete Norte)
+Comuna 10,La Candelaria,Centro Comercial Medellín
+Comuna 10,La Candelaria,Pasaje Carabobo (Frente Iglesia Veracruz)
+Comuna 10,La Candelaria,Plazoleta Iglesia San José
+Comuna 10,La Candelaria,Centro Comercial Bazar San Antonio
+Comuna 10,La Candelaria,Parques del Río 1B Sur
+Comuna 10,La Candelaria,Parques del Río 1B Norte
+Comuna 10,La Candelaria,Pasaje La Bastilla x Av La Playa
+Comuna 10,La Candelaria,Parque República
+Comuna 11,Laureles Estadio,Coliseo de Voleibol Yesid Santos Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Coliseo de Combate Guillermo Gaviria Correa Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Coliseo de Gimnasia Jorge Hugo Giraldo Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Coliseo Iván de Bedout Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Complejo Acuático Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Pista de Atletismo Alfonso Galvis Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Plazoleta de Banderas Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Diamante de Béisbol Luis Alberto Villegas Unid. Deportiva Atanasio Girardot
+Comuna 11,Laureles Estadio,Centro de Servicios El Estadio
+Comuna 11,Laureles Estadio,Centro de Integración Comuna 11 (Casa Betancur)
+Comuna 11,Laureles Estadio,Mall Laureles
+Comuna 11,Laureles Estadio,Parque Amisura
+Comuna 11,Laureles Estadio,Parque Cancha Grande San Joaquín
+Comuna 11,Laureles Estadio,Parque 4 Vientos (Los Colores)
+Comuna 11,Laureles Estadio,Parque El Emperador
+Comuna 11,Laureles Estadio,Parque El Triángulo (Conquistadores)
+Comuna 11,Laureles Estadio,Parque La Castellana
+Comuna 11,Laureles Estadio,Parque La Matea
+Comuna 11,Laureles Estadio,Parque Lourdes
+Comuna 11,Laureles Estadio,Parque Pinocho
+Comuna 11,Laureles Estadio,Parque Plan Parcial Invatex
+Comuna 11,Laureles Estadio,Parque Unicentro
+Comuna 11,Laureles Estadio,Plazuela Carlos E. Restrepo
+Comuna 11,Laureles Estadio,Primer Parque de Laureles
+Comuna 11,Laureles Estadio,Parque Suramericana Alta
+Comuna 11,Laureles Estadio,Plazoleta Estación Metro Suramericana (exterior)
+Comuna 11,Laureles Estadio,Plazoleta Estación Metro Estadio (exterior)
+Comuna 11,Laureles Estadio,Ampliación Estación Estadio Plazoleta (exterior)
+Comuna 11,Laureles Estadio,Parques del Río
+Comuna 12,La América,Casa de la Cultura Los Alcázares
+Comuna 12,La América,Mascerca La Floresta
+Comuna 12,La América,Parque del Ajedrez
+Comuna 12,La América,Unidad Deportiva Barrio Cristóbal
+Comuna 12,La América,Zona Verde Recreacional La Arboleda
+Comuna 12,La América,Parque Principal La Floresta
+Comuna 12,La América,CAV La América
+Comuna 12,La América,Centro de Salud Santa Rosa de Lima
+Comuna 12,La América,Aula Ambiental Plaza La América
+Comuna 12,La América,Placa PoliDeportiva La Cristóbal
+Comuna 12,La América,Parque Campo Alegre (La Jota)
+Comuna 12,La América,Parque Los Tanques
+Comuna 12,La América,Estación Metro Santa Lucía (exterior)
+Comuna 12,La América,Parque El Manicomio
+Comuna 12,La América,Parque Infantil Colinas de Calasanz
+Comuna 12,La América,Unidad Deportiva La Floresta
+Comuna 12,La América,Cancha sintética Santa Lucia
+Comuna 13,San Javier,CAV Belencito
+Comuna 13,San Javier,Unidad Deportiva Antonio Nariño
+Comuna 13,San Javier,Casa de Justicia 20 de Julio
+Comuna 13,San Javier,UPSS San Javier
+Comuna 13,San Javier,Centro de Salud La Esperanza
+Comuna 13,San Javier,Centro de Salud Manantial de Vida
+Comuna 13,San Javier,Centro de Salud La Quiebra
+Comuna 13,San Javier,Centro de Salud Villa Laura
+Comuna 13,San Javier,Placa Polideportiva La Loma
+Comuna 13,San Javier,Plazoleta Estación Metro San Javier B (exterior)
+Comuna 13,San Javier,Estacion San Javier (Metrocable J) (interior)
+Comuna 13,San Javier,Escaleras Eléctricas (Viaducto)
+Comuna 13,San Javier,Escaleras Eléctricas (Tramos 4 5 Y 6)
+Comuna 13,San Javier,Centralidad El Pesebre
+Comuna 13,San Javier,CVS San Javier
+Comuna 13,San Javier,Placa PoliDeportiva Blanquizal
+Comuna 13,San Javier,Desarrollo Integral el Socorro
+Comuna 13,San Javier,Placa PoliDeportiva Metropolitano
+Comuna 13,San Javier,Viaducto Tramo Dos
+Comuna 13,San Javier,Cancha La Campiña Pradera Baja
+Comuna 13,San Javier,Viaducto tramo 2 parte alta
+Comuna 13,San Javier,Cancha Belencito Betania
+Comuna 13,San Javier,Iglesia Madre Redentor
+Comuna 13,San Javier,Parque La paz
+Comuna 13,San Javier,Parque Villa del Socorro
+Comuna 13,San Javier,CAI Salado
+Comuna 13,San Javier,Desarrollo integral Salado
+Comuna 13,San Javier,Gimnasio El Salado
+Comuna 13,San Javier,Iglesia San José P1
+Comuna 13,San Javier,Iglesia San José P2
+Comuna 13,San Javier,Cancha Fuente Clara
+Comuna 14,El Poblado,Plazoleta Y Parque Cultural Del Mamm
+Comuna 14,El Poblado,Plazoleta Estación Metro Poblado (exterior)
+Comuna 14,El Poblado,Parque El Poblado
+Comuna 14,El Poblado,Mascerca Poblado
+Comuna 14,El Poblado,Parque Lleras
+Comuna 14,El Poblado,Plazoleta Estación Metro Industriales (exterior)
+Comuna 14,El Poblado,Estación Metro Poblado
+Comuna 14,El Poblado,Canal Parque Telemedellín
+Comuna 14,El Poblado,Parque Lineal Ciudad Del Río
+Comuna 14,El Poblado,Ruta De La Memoria – Parque Memorial De Inflexion
+Comuna 14,El Poblado,Estación Metro Aguacatala – MTR Estación Aguacatala
+Comuna 14,El Poblado,Parque La Presidenta
+Comuna 14,El Poblado,Cancha Polideportiva divina eucaristía
+Comuna 15,Guayabal,Parque de Cristo Rey
+Comuna 15,Guayabal,Aeroparque Juan Pablo Segundo
+Comuna 15,Guayabal,Unidad Deportiva María Luisa
+Comuna 15,Guayabal,Coliseo Carlos Mauro Hoyos
+Comuna 15,Guayabal,Terminal del Sur
+Comuna 15,Guayabal,Plazoleta Estación Metroplus Industriales (exterior)
+Comuna 15,Guayabal,Mascerca Guayabal
+Comuna 15,Guayabal,Centro de Salud Guayabal
+Comuna 15,Guayabal,Unidad Deportiva Campo Amor
+Comuna 15,Guayabal,Estación Metroplus Industriales L1 (interior plataforma abordaje)
+Comuna 15,Guayabal,Plaza Gardel – Aeropuerto Olaya Herrera
+Comuna 15,Guayabal,Placa PoliDeportiva Trinidad
+Comuna 15,Guayabal,Parque Manzanares
+Comuna 15,Guayabal,Parque De Ruedas 4 Sur
+Comuna 15,Guayabal,Parque San Pablo
+Comuna 15,Guayabal,Cancha Trinidad
+Comuna 15,Guayabal,Biblioteca Manuel Mejia Vallejo
+Comuna 16,Belén,Cerro Nutibara (Terraza pueblito paisa) Reubicado
+Comuna 16,Belén,Pista de Bicicross Antonio Roldán Betancur
+Comuna 16,Belén,Tiro Con Arco Unidad Deportiva Andrés Escobar
+Comuna 16,Belén,Bolera Unidad Deportiva Andrés Escobar
+Comuna 16,Belén,Desarrollo Integral Belén Zafra
+Comuna 16,Belén,UPSS Belén
+Comuna 16,Belén,CVS Belen (CEDEZO Belén)
+Comuna 16,Belén,Parque Biblioteca de Belén / Centro de Salud Belén Rincón
+Comuna 16,Belén,Parque Belén
+Comuna 16,Belén,Mascerca Belén
+Comuna 16,Belén,Desarrollo Integral Belén Rincón
+Comuna 16,Belén,Parque Principal Belén Los Alpes
+Comuna 16,Belén,Cancha de Fútbol Arenilla Buena Vista
+Comuna 16,Belén,Parque Quimbaya
+Comuna 16,Belén,Cancha Las Violetas
+Comuna 16,Belén,Cancha polideportiva Belén las playas
+Comuna 16,Belén,Cancha Polideportiva Belen Los Alpes
+Comuna 16,Belén,Parque Infantil Al Frente Entrada 4 Udem
+Comuna 16,Belén,Parque La Mota
+Comuna 16,Belén,Parque De Belen La Nubia
+Comuna 16,Belén,Cancha arenilla Altavista
+Comuna 16,Belén,Pueblito Paisa
+Comuna 16,Belén,Parque Malibu
+Comuna 16,Belén,Parque la Chinca – San Carlos
+Comuna 16,Belén,Parque San José de la Montaña
+Comuna 50,San Sebastián de Palmitas,Casa de Gobierno San Sebastián de Palmitas
+Comuna 50,San Sebastián de Palmitas,Centralidad Vereda La Suiza
+Comuna 50,San Sebastián de Palmitas,Parque San Sebastián de Palmitas
+Comuna 50,San Sebastián de Palmitas,Placa Polideportiva Vereda La Aldea
+Comuna 60,San Cristóbal,Casa de Gobierno San Cristóbal
+Comuna 60,San Cristóbal,Exteriores Ludoteca Casa San Martín
+Comuna 60,San Cristóbal,UPSS Nuevo Occidente
+Comuna 60,San Cristóbal,CVS San Cristóbal
+Comuna 60,San Cristóbal,UPSS San Cristóbal
+Comuna 60,San Cristóbal,Centro de Servicios Nuevo Occidente (Casa Lusitania)
+Comuna 60,San Cristóbal,Centro de Salud La Loma
+Comuna 60,San Cristóbal,Cancha Jose Betancur
+Comuna 60,San Cristóbal,Plazoleta Estación Metrocable La Aurora (exterior)
+Comuna 60,San Cristóbal,Unidad Deportiva San Cristóbal
+Comuna 60,San Cristóbal,Ruta De La Memoria – Plazoleta Villa Suramericana (Frente La Aurora)
+Comuna 60,San Cristóbal,Parque Principal San Cristóbal
+Comuna 60,San Cristóbal,Placa la Ilusión
+Comuna 70,Altavista,Casa de Gobierno Altavista
+Comuna 70,Altavista,Parque Principal de Altavista
+Comuna 70,Altavista,Cancha de Arena El Manzanillo
+Comuna 70,Altavista,La Esperanza
+Comuna 70,Altavista,Placa PoliDeportiva Los Tanques
+Comuna 70,Altavista,Placa de Arenilla Aguas Frías
+Comuna 70,Altavista,Cancha Aguas Frías Parte Alta
+Comuna 80,San Antonio de Prado,Casa de Gobierno San Antonio de Prado
+Comuna 80,San Antonio de Prado,CVS San Antonio de Prado (cedezo San Antonio de Prado)
+Comuna 80,San Antonio de Prado,Biblioteca José Horacio Betancur Parque principal San Antonio de Prado
+Comuna 80,San Antonio de Prado,Corregiduría El Limonar
+Comuna 80,San Antonio de Prado,Cancha Sintética Horizontes
+Comuna 80,San Antonio de Prado,Zona Verde El Limonar No. 2
+Comuna 80,San Antonio de Prado,Placa Polideportiva Montañita
+Comuna 80,San Antonio de Prado,Placa polideportiva potrerito
+Comuna 90,Santa Elena,Casa de Gobierno Santa Elena
+Comuna 90,Santa Elena,Parque Santa Elena
+Comuna 90,Santa Elena,Plazoleta Estación Metrocable Parque Arví (exterior)
+Comuna 90,Santa Elena,Piedras Blancas
+Comuna 90,Santa Elena,Parque Arví – Centro Ambiental y Cultural Parque Arví
+Comuna 90,Santa Elena,@Medellín – Sapiencia Centralidad Mazo
+Comuna 90,Santa Elena,Bello Oriente (Sector Palomar)
+Comuna 90,Santa Elena,El Tambo
+Comuna 90,Santa Elena,Fuerte de Carabineros
