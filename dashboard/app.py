@@ -65,9 +65,9 @@ def load_data():
 densidad_b, densidad_c, edad_g, flujo_b, flujo_c, master, artesanos, creditos = load_data()
 
 # ── Header ────────────────────────────────────────────────────────────────────
-_logo_col, _title_col = st.columns([1, 5])
+_logo_col, _title_col = st.columns([1, 4])
 with _logo_col:
-    st.image(str(_LOGO), width=120)
+    st.image(str(_LOGO), width=200)
 with _title_col:
     st.title("ConectEMP")
     st.caption("Oportunidades de emprendimiento en Medellín — Datos Medata")
