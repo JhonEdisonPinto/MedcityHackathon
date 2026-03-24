@@ -241,13 +241,15 @@ def _calcular_score(df: pd.DataFrame) -> pd.DataFrame:
 
     scaler = MinMaxScaler()
 
-    cols_num = ["total_registros", "n_emprendedores", "total_usuarios"]
+    cols_num = ["total_registros", "n_emprendedores", "n_emprendedores_total", "total_usuarios"]
     for c in cols_num:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
 
+    # Usar total combinado (artesanos + creditados) si existe
+    emp_col = "n_emprendedores_total" if "n_emprendedores_total" in df.columns else "n_emprendedores"
     df["trafico_norm"] = scaler.fit_transform(df[["total_registros"]]) if "total_registros" in df.columns else 0
-    df["emp_norm"] = scaler.fit_transform(df[["n_emprendedores"]]) if "n_emprendedores" in df.columns else 0
+    df["emp_norm"] = scaler.fit_transform(df[[emp_col]]) if emp_col in df.columns else 0
 
     if "total_usuarios" in df.columns and "total_registros" in df.columns:
         ratio = (df["total_usuarios"] / (df["total_registros"] + 1)).fillna(0)
@@ -336,6 +338,9 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
         merged["total_registros"] = merged["total_registros"].combine_first(merged["total_registros_flujo"])
 
     merged["n_emprendedores"] = merged["n_emprendedores"].fillna(0).astype(int)
+    # Combinar artesanos + creditados para el cálculo de score
+    merged["n_creditos"] = merged["n_creditos"].fillna(0).astype(int)
+    merged["n_emprendedores_total"] = merged["n_emprendedores"] + merged["n_creditos"]
     merged = _calcular_score(merged)
 
     documents, metadatas, ids = [], [], []
@@ -361,6 +366,9 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
         trafico = int(row.get("total_registros", 0) or 0)
         usuarios = int(row.get("total_usuarios_x", row.get("total_usuarios", 0)) or 0)
         n_emp = int(row.get("n_emprendedores", 0))
+        _nc_pre = row.get("n_creditos", 0)
+        n_cred_barrio = int(_nc_pre) if not pd.isna(_nc_pre) else 0
+        n_emp_total = n_emp + n_cred_barrio
         n_sedes = int(row.get("n_sedes_x", row.get("n_sedes", 0)) or 0)
         score = float(row.get("score_oportunidad", 0))
         cuadrante = row.get("cuadrante", "EMERGENTE")
@@ -381,29 +389,29 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
         idx_diversif = row.get("indice_diversificacion", None)
         n_tipos = row.get("n_tipos_unicos", 0)
 
-        usuarios_por_emp = round(usuarios / n_emp, 0) if n_emp > 0 else usuarios
+        usuarios_por_emp = round(usuarios / n_emp_total, 0) if n_emp_total > 0 else usuarios
 
         # Clasificación de oportunidad
         if cuadrante == "OPORTUNIDAD":
             oport_texto = (
                 f"El barrio {barrio} tiene ALTA OPORTUNIDAD de negocio: "
-                f"flujo de {trafico:,} conexiones WiFi pero solo {n_emp} emprendimientos activos, "
+                f"flujo de {trafico:,} conexiones WiFi pero solo {n_emp_total} emprendimientos activos, "
                 f"lo que equivale a {int(usuarios_por_emp):,} usuarios por emprendimiento."
             )
         elif cuadrante == "CONSOLIDADA":
             oport_texto = (
                 f"El barrio {barrio} es una zona CONSOLIDADA: "
-                f"alto tráfico ({trafico:,} registros WiFi) con {n_emp} emprendimientos establecidos."
+                f"alto tráfico ({trafico:,} registros WiFi) con {n_emp_total} emprendimientos establecidos."
             )
         elif cuadrante == "SATURADA":
             oport_texto = (
                 f"El barrio {barrio} muestra signos de SATURACIÓN: "
-                f"bajo tráfico relativo pero {n_emp} emprendimientos compitiendo."
+                f"bajo tráfico relativo pero {n_emp_total} emprendimientos compitiendo."
             )
         else:
             oport_texto = (
                 f"El barrio {barrio} es una zona EMERGENTE: "
-                f"bajo tráfico y pocos emprendimientos ({n_emp}), con potencial de crecimiento."
+                f"bajo tráfico y pocos emprendimientos ({n_emp_total}), con potencial de crecimiento."
             )
 
         # Mismatch demográfico (Capa 3 del plan)
@@ -419,17 +427,17 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
 
         # Saturación de sector (Capa 3)
         saturacion_texto = ""
-        if idx_diversif is not None and not pd.isna(idx_diversif) and n_emp > 2:
+        if idx_diversif is not None and not pd.isna(idx_diversif) and n_emp_total > 2:
             if idx_diversif < 0.3:
                 saturacion_texto = (
                     f"\nSATURACIÓN DE SECTOR: Índice de diversificación bajo ({idx_diversif:.2f}). "
-                    f"El {tipo_dominante} domina con la mayoría de los {n_emp} emprendimientos. "
+                    f"El {tipo_dominante} domina con la mayoría de los {n_emp_total} emprendimientos. "
                     f"Considerar rubros alternativos."
                 )
             elif idx_diversif > 0.7:
                 saturacion_texto = (
                     f"\nECOSISTEMA DIVERSIFICADO: Índice de diversificación alto ({idx_diversif:.2f}). "
-                    f"{n_tipos} tipos de negocio diferentes entre {n_emp} emprendimientos."
+                    f"{n_tipos} tipos de negocio diferentes entre {n_emp_total} emprendimientos."
                 )
 
         rec_negocio = _recomendar_negocio(
@@ -499,7 +507,7 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
             f"- Conexiones WiFi públicas totales: {trafico:,}\n"
             f"- Usuarios únicos estimados: {usuarios:,}\n"
             f"- Puntos WiFi (sedes): {n_sedes}\n"
-            f"- Emprendimientos actuales: {n_emp}\n"
+            f"- Emprendimientos actuales: {n_emp_total} (artesanos: {n_emp}, microemp. creditados: {n_cred_barrio})\n"
             f"- Usuarios por emprendimiento: {int(usuarios_por_emp):,}\n\n"
             f"PERFIL DEL CONSUMIDOR WiFi:\n"
             f"- Edad dominante: {edad_dom}\n"
