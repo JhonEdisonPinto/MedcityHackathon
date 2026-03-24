@@ -27,6 +27,22 @@ class RagSettings:
         load_dotenv(repo_root / ".env", override=False)
         load_dotenv(current_file.parent / ".env", override=False)
 
+        # Fallback: leer st.secrets si estamos en Streamlit y falta alguna key
+        _STREAMLIT_KEYS = [
+            "PINECONE_API_KEY", "PINECONE_INDEX",
+            "GROQ_API_KEY", "GROQ_MODEL",
+            "RAG_EMBEDDING_MODEL", "RAG_TOP_K",
+        ]
+        try:
+            import streamlit as st
+            for key in _STREAMLIT_KEYS:
+                if not os.environ.get(key):
+                    val = st.secrets.get(key)
+                    if val:
+                        os.environ[key] = str(val)
+        except Exception:
+            pass
+
         return cls(
             embedding_model=os.getenv("RAG_EMBEDDING_MODEL", "all-MiniLM-L6-v2").strip(),
             pinecone_api_key=os.getenv("PINECONE_API_KEY", "").strip(),

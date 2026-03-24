@@ -26,6 +26,17 @@ class GroqSettings:
         load_dotenv(repo_root / ".env", override=False)
         load_dotenv(current_file.parent / ".env", override=False)
 
+        # Fallback: leer st.secrets si estamos en Streamlit y falta alguna key
+        try:
+            import streamlit as st
+            for key in ["GROQ_API_KEY", "GROQ_MODEL"]:
+                if not os.environ.get(key):
+                    val = st.secrets.get(key)
+                    if val:
+                        os.environ[key] = str(val)
+        except Exception:
+            pass
+
         api_key = os.getenv("GROQ_API_KEY", "").strip()
         model_name = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b").strip()
         temperature = float(os.getenv("GROQ_TEMPERATURE", "0.1"))
