@@ -524,7 +524,9 @@ _PROMPTS_POR_INTENT = {
         "- Nivel de saturación (cuadrante y emprendimientos existentes)\n"
         "- Ratio usuarios/emprendimiento (demanda no cubierta)\n"
         "- Si el usuario menciona un tipo de negocio, evalúa si es viable ahí\n"
-        "Para cada recomendación: nombre del negocio + por qué + dato que lo respalda."
+        "Para cada recomendación: nombre del negocio + por qué + dato que lo respalda.\n"
+        "Debes entregar EXACTAMENTE 3 opciones (opción principal + 2 alternativas).\n"
+        "Explica contexto de viabilidad: demanda esperada, nivel de competencia y perfil de cliente."
     ),
     "comparar_zonas": (
         "TAREA: Presenta un ranking comparativo de los barrios/comunas encontrados.\n"
@@ -555,6 +557,34 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
 
     tarea = _PROMPTS_POR_INTENT.get(intent, _PROMPTS_POR_INTENT["general"])
 
+    formato_respuesta = (
+        "1) Hallazgo principal (2-3 frases, con cifras del contexto)\n"
+        "2) Recomendación accionable (1-2 frases)\n"
+        f"3) Fuente: Medata Medellín — {sources_str}"
+    )
+
+    if intent == "recomendar_negocio":
+        formato_respuesta = (
+            "1) Contexto de la zona (2-3 frases):\n"
+            "   - perfil de demanda (edad/dispositivo/tráfico)\n"
+            "   - saturación/competencia en la zona\n"
+            "2) Opción 1 (principal):\n"
+            "   - nombre del negocio\n"
+            "   - por qué sería buena (2 razones)\n"
+            "   - dato concreto que la respalda\n"
+            "3) Opción 2 (alternativa):\n"
+            "   - nombre del negocio\n"
+            "   - por qué sería buena\n"
+            "   - dato concreto que la respalda\n"
+            "4) Opción 3 (alternativa):\n"
+            "   - nombre del negocio\n"
+            "   - por qué sería buena\n"
+            "   - dato concreto que la respalda\n"
+            "5) Recomendación final:\n"
+            "   - cuál opción priorizar primero y por qué\n"
+            f"6) Fuente: Medata Medellín — {sources_str}"
+        )
+
     prompt = (
         "Eres el asistente de MedCity Dashboard, un sistema de datos abiertos de Medellín, Colombia.\n\n"
         "REGLAS ESTRICTAS:\n"
@@ -572,9 +602,7 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
         f"PREGUNTA: {user_q}\n\n"
         f"CONTEXTO:\n{context}\n\n"
         "FORMATO:\n"
-        "1) Hallazgo principal (2-3 frases, con cifras del contexto)\n"
-        "2) Recomendación accionable (1-2 frases)\n"
-        f"3) Fuente: Medata Medellín — {sources_str}"
+        f"{formato_respuesta}"
     )
 
     try:
