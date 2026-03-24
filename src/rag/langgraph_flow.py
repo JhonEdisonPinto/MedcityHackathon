@@ -1,22 +1,18 @@
 """
-langgraph_flow.py — Pipeline RAG completo para MedCity Dashboard.
+langgraph_flow.py — Pipeline RAG con LangGraph para el asistente de emprendimiento.
 
-Implementa las 3 intenciones definidas en plans/MedCity_Dashboard_Ideas.md
-(Capa 5) con soporte para:
-
+Intenciones soportadas:
   - Caracterizar zona     → indicadores, perfil demográfico, tráfico WiFi
-  - Encontrar oportunidad → vacío de oferta, saturación, mismatch, ranking
-  - Recomendar negocio    → top rubros según perfil consumidor y cuadrante
+  - Encontrar oportunidad → vacío de oferta, saturación, ranking
+  - Recomendar negocio    → top rubros según perfil consumidor
   - Comparar zonas        → ranking de barrios/comunas por indicador
   - Consulta general      → contexto global de Medellín
 
 Grafo:
   START → router → extraer_entidades → validar_info
-        ─(info completa)─→ construir_query → recuperar_datos
-                          → construir_contexto → sintetizar → END
-        ─(info falta)────→ pedir_info → END
-
-Cada nodo imprime su estado para trazabilidad en consola.
+        ─(completa)─→ construir_query → recuperar_datos (Pinecone)
+                     → construir_contexto → sintetizar (Groq) → END
+        ─(falta)────→ pedir_info → END
 """
 from __future__ import annotations
 
@@ -98,6 +94,7 @@ class MedCityState(TypedDict, total=False):
     structured_context: str
     answer: str
     sources: List[str]
+    _is_city_level: bool
 
 
 # ── Utilidades ────────────────────────────────────────────────────────────────
@@ -116,10 +113,7 @@ def _normalize(s: str) -> str:
 # ── NODO 1: Router de intención ──────────────────────────────────────────────
 
 def router_intencion(state: MedCityState) -> MedCityState:
-    """
-    Detecta la intención del usuario (Capa 5 del plan).
-    Soporta las 3 intenciones principales + comparar + general.
-    """
+    """Detecta la intención del usuario entre las 5 intenciones soportadas."""
     q = _normalize(state.get("user_query", ""))
 
     kw_recomendar = [
@@ -148,6 +142,13 @@ def router_intencion(state: MedCityState) -> MedCityState:
         "cuantos emprendedores", "cuantos negocios", "quien emprende",
         "cuantos creditos", "monto financiado", "creditos otorgados",
     ]
+    # Keywords que indican consultas a nivel ciudad (necesitan doc global)
+    kw_ciudad = [
+        "medellin", "toda la ciudad", "en total", "cuantos artesanos",
+        "cuantos emprendedores hay", "a nivel ciudad", "panorama general",
+        "resumen general", "resumen de la ciudad", "todos los barrios",
+        "todas las comunas", "en la ciudad",
+    ]
 
     intent: Intent = "general"
 
@@ -173,8 +174,14 @@ def router_intencion(state: MedCityState) -> MedCityState:
                     intent = "caracterizar_zona"
                     break
 
-    print(f"  [router] Intención detectada: {intent}")
-    return {"intent": intent}
+    # Detectar consultas a nivel ciudad → comparar_zonas (necesita doc global + múltiples docs)
+    is_city_level = any(k in q for k in kw_ciudad)
+    if is_city_level and intent in ("general", "caracterizar_zona"):
+        intent = "comparar_zonas"
+
+    print(f"  [router] Intención detectada: {intent}"
+          f"{' (nivel ciudad)' if is_city_level else ''}")
+    return {"intent": intent, "_is_city_level": is_city_level}
 
 
 # ── NODO 2: Extraer entidades ────────────────────────────────────────────────
@@ -182,7 +189,6 @@ def router_intencion(state: MedCityState) -> MedCityState:
 def extraer_entidades(state: MedCityState) -> MedCityState:
     """
     Extrae zona (barrio/comuna) y tipo_negocio del texto del usuario.
-    Soporta el flujo conversacional de la Capa 5:
       - Caracterizar → necesita zona
       - Oportunidad  → puede tener tipo_negocio
       - Recomendar   → necesita zona
@@ -237,7 +243,7 @@ def extraer_entidades(state: MedCityState) -> MedCityState:
 
 def validar_info(state: MedCityState) -> MedCityState:
     """
-    Verifica si tenemos suficiente info para responder (Capa 5 del plan).
+    Verifica si tenemos suficiente info para responder.
     Si falta info crítica, genera pregunta de seguimiento.
 
     Reglas:
@@ -297,7 +303,7 @@ def pedir_info(state: MedCityState) -> MedCityState:
 
 def construir_query_rag(state: MedCityState) -> MedCityState:
     """
-    Construye query semántica optimizada para ChromaDB.
+    Construye query semántica optimizada para Pinecone.
     Templates por intención para mejor retrieval.
     """
     intent = state.get("intent", "general")
@@ -348,6 +354,7 @@ def construir_query_rag(state: MedCityState) -> MedCityState:
 
     else:
         rag_q = user_q or "contexto general Medellín emprendimiento WiFi"
+        n_results = 8  # Más docs para consultas generales
 
     print(f"  [rag_query] '{rag_q}' (top {n_results})")
     return {"rag_query": rag_q, "n_results": n_results}
@@ -357,7 +364,7 @@ def construir_query_rag(state: MedCityState) -> MedCityState:
 
 def recuperar_datos(state: MedCityState) -> MedCityState:
     """
-    Recupera documentos de ChromaDB con filtro por zona cuando aplica.
+    Recupera documentos de Pinecone con filtro por zona cuando aplica.
     Para comparaciones/rankings, recupera sin filtro para obtener múltiples zonas.
     """
     rag_q = state.get("rag_query", state.get("user_query", ""))
@@ -385,8 +392,8 @@ def recuperar_datos(state: MedCityState) -> MedCityState:
             print(f"  [recuperar] ERROR: {e}")
             items = []
 
-    # Para comparaciones, también traer el doc global
-    if intent in ("comparar_zonas", "encontrar_oportunidad") and not zone:
+    # Para comparaciones, oportunidades y consultas generales, también traer el doc global
+    if intent in ("comparar_zonas", "encontrar_oportunidad", "general") or state.get("_is_city_level"):
         try:
             global_items = retrieve_rag_context(
                 "contexto general Medellín", n_results=1,
@@ -446,6 +453,11 @@ def construir_contexto(state: MedCityState) -> MedCityState:
                     f"{' | Tipo negocio: ' + tipo_negocio if tipo_negocio else ''}")
     sections.append(f"Documentos relevantes: {len(docs)}\n")
 
+    # Priorizar documento global (ponerlo primero si es consulta amplia)
+    global_docs = [d for d in docs if d.get("tipo") == "global"]
+    other_docs = [d for d in docs if d.get("tipo") != "global"]
+    ordered_docs = global_docs + other_docs if (not zone or state.get("_is_city_level")) else docs
+
     # Insertar texto completo de cada documento
     # Si la zona solicitada no coincide con ningún doc, agregar nota
     zona_encontrada = any(
@@ -459,7 +471,7 @@ def construir_contexto(state: MedCityState) -> MedCityState:
             f"Se muestran datos de zonas similares o cercanas como referencia.\n"
         )
 
-    for i, doc in enumerate(docs, 1):
+    for i, doc in enumerate(ordered_docs, 1):
         dist = doc.get("distance", 0)
         relevancia = "ALTA" if dist < 1.0 else "MEDIA" if dist < 1.5 else "BAJA"
         sections.append(f"--- Documento {i} (relevancia: {relevancia}) ---")
@@ -487,8 +499,8 @@ def construir_contexto(state: MedCityState) -> MedCityState:
 
     ctx = "\n".join(sections)
     # Límite para no desbordar el contexto del LLM
-    if len(ctx) > 6000:
-        ctx = ctx[:6000] + "\n... [contexto truncado]"
+    if len(ctx) > 16000:
+        ctx = ctx[:16000] + "\n... [contexto truncado]"
 
     print(f"  [contexto] {len(ctx)} caracteres ensamblados")
     return {"structured_context": ctx}
@@ -496,56 +508,43 @@ def construir_contexto(state: MedCityState) -> MedCityState:
 
 # ── NODO 7: Sintetizar respuesta ─────────────────────────────────────────────
 
-# Prompts específicos por intención (Capa 5 del plan)
+# Prompts específicos por intención
 _PROMPTS_POR_INTENT = {
     "caracterizar_zona": (
-        "TAREA: Describe el perfil completo del barrio/comuna con estos indicadores "
-        "(Capa 2 del plan MedCity):\n"
-        "- Densidad emprendedora (emprendedores activos)\n"
-        "- Flujo de usuarios WiFi (total conexiones, sedes) si disponible\n"
-        "- Perfil del consumidor WiFi (edad, género, dispositivo) si disponible\n"
-        "- Perfil del emprendedor (estrato, edad media, % mujeres, cabezas de hogar, tipos de negocio)\n"
-        "- Créditos otorgados a microempresarios (número, monto total, monto promedio, actividades financiadas)\n"
-        "- Score de oportunidad y cuadrante\n"
-        "- Usuarios por emprendimiento (indicador de demanda no cubierta)\n"
-        "- Mismatch demográfico si existe (perfil consumidor vs emprendedor)\n"
-        "- Índice de diversificación de negocios\n"
-        "- Brecha de financiamiento (si no hay créditos o son pocos vs emprendedores)\n"
-        "Si el barrio no tiene WiFi pero sí emprendedores, indica eso claramente.\n"
-        "Dato concreto + fuente + recomendación."
+        "TAREA: Describe la zona de forma clara y sencilla. Incluye:\n"
+        "- Cuántos emprendedores hay y de qué tipo\n"
+        "- Si hay WiFi público y cuánta gente lo usa\n"
+        "- Quién emprende ahí (edad, género, estrato)\n"
+        "- Si hay créditos disponibles o no (cuántos y por cuánta plata)\n"
+        "- Si es buena zona para emprender o ya hay mucha competencia\n"
+        "- Qué se puede hacer ahí (consejo práctico)\n"
+        "Si no hay WiFi en el barrio, menciónalo. Sé directo y breve."
     ),
     "encontrar_oportunidad": (
-        "TAREA: Identifica y explica las oportunidades usando indicadores de la Capa 3:\n"
-        "- Vacío de oferta: alto tráfico WiFi pero pocos emprendimientos\n"
-        "- Saturación de sector: muchos emprendimientos del mismo tipo\n"
-        "- Mismatch demográfico: perfil usuario ≠ perfil emprendedor\n"
-        "- Brecha de acceso a crédito: barrios con emprendedores pero sin/pocos créditos otorgados\n"
-        "- Análisis de financiamiento: montos totales, promedios y cobertura de créditos\n"
-        "- Score de oportunidad y cuadrante de cada zona\n"
-        "Rankea las zonas de mayor a menor oportunidad. Dato concreto + fuente."
+        "TAREA: Muestra las mejores zonas para emprender, explicado de forma sencilla:\n"
+        "- Dónde hay mucha gente pero pocos negocios (oportunidad)\n"
+        "- Dónde ya hay demasiados negocios iguales (cuidado, mucha competencia)\n"
+        "- Dónde faltan créditos para los emprendedores\n"
+        "Ordena de mejor a peor oportunidad. Da cifras concretas y un consejo práctico."
     ),
     "recomendar_negocio": (
-        "TAREA: Recomienda los TOP 3 tipos de negocio para la zona, basándote en:\n"
-        "- Perfil del consumidor WiFi (edad dominante, dispositivo)\n"
-        "- Nivel de saturación (cuadrante y emprendimientos existentes)\n"
-        "- Ratio usuarios/emprendimiento (demanda no cubierta)\n"
-        "- Créditos otorgados: qué actividades han sido financiadas y montos disponibles\n"
-        "- Si el usuario menciona un tipo de negocio, evalúa si es viable ahí\n"
-        "Para cada recomendación: nombre del negocio + por qué + dato que lo respalda.\n"
-        "Debes entregar EXACTAMENTE 3 opciones (opción principal + 2 alternativas).\n"
-        "Explica contexto de viabilidad: demanda esperada, nivel de competencia y perfil de cliente."
+        "TAREA: Recomienda 3 negocios para la zona. Para cada uno explica:\n"
+        "- Qué negocio montar\n"
+        "- Por qué funcionaría ahí (en 1-2 frases simples con datos)\n"
+        "Al final, di cuál es la mejor opción y por qué."
     ),
     "comparar_zonas": (
-        "TAREA: Presenta un ranking comparativo de los barrios/comunas encontrados.\n"
-        "Para cada uno indica:\n"
-        "- Score de oportunidad y cuadrante\n"
-        "- Tráfico WiFi vs emprendedores (vacío de oferta)\n"
-        "- Perfil del consumidor dominante\n"
-        "Ordena de mayor a menor oportunidad. Cierra con cuál zona conviene más y por qué."
+        "TAREA: Compara las zonas y di cuál es mejor para emprender.\n"
+        "Para cada zona menciona: cuántos negocios hay, cuánta gente pasa, "
+        "y si hay créditos disponibles. Ordena de mejor a peor. "
+        "Cierra con una recomendación clara."
     ),
     "general": (
-        "TAREA: Responde la pregunta del usuario usando los datos de Medata disponibles.\n"
-        "Cita cifras exactas del contexto. Si no tienes el dato, dilo explícitamente."
+        "TAREA: Responde la pregunta con los datos disponibles.\n"
+        "Da cifras exactas del contexto. Si se pregunta por totales, incluye TODOS los datos "
+        "que aparecen. Si hay distribución por barrio, muéstrala completa.\n"
+        "Si no tienes el dato, di 'No tenemos ese dato en nuestra base'.\n"
+        "IMPORTANTE: Usa el documento global para dar cifras totales de toda la ciudad."
     ),
 }
 
@@ -553,7 +552,7 @@ _PROMPTS_POR_INTENT = {
 def sintetizar_respuesta(state: MedCityState) -> MedCityState:
     """
     Genera la respuesta usando Groq LLM con prompts específicos por intención
-    y el contexto RAG completo (Capa 5 del plan).
+    y el contexto RAG completo.
     Siempre incluye: dato concreto + fuente explícita + recomendación.
     """
     context = state.get("structured_context", "")
@@ -565,46 +564,36 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
     tarea = _PROMPTS_POR_INTENT.get(intent, _PROMPTS_POR_INTENT["general"])
 
     formato_respuesta = (
-        "1) Hallazgo principal (2-3 frases, con cifras del contexto)\n"
-        "2) Recomendación accionable (1-2 frases)\n"
-        f"3) Fuente: Medata Medellín — {sources_str}"
+        "Responde en MÁXIMO 8-10 líneas. Estructura:\n"
+        "1) Respuesta directa (1-2 frases con cifras)\n"
+        "2) Qué hacer con eso (1 consejo práctico)\n"
+        f"3) Fuente: Datos Medata Medellín — {sources_str}"
     )
 
     if intent == "recomendar_negocio":
         formato_respuesta = (
-            "1) Contexto de la zona (2-3 frases):\n"
-            "   - perfil de demanda (edad/dispositivo/tráfico)\n"
-            "   - saturación/competencia en la zona\n"
-            "2) Opción 1 (principal):\n"
-            "   - nombre del negocio\n"
-            "   - por qué sería buena (2 razones)\n"
-            "   - dato concreto que la respalda\n"
-            "3) Opción 2 (alternativa):\n"
-            "   - nombre del negocio\n"
-            "   - por qué sería buena\n"
-            "   - dato concreto que la respalda\n"
-            "4) Opción 3 (alternativa):\n"
-            "   - nombre del negocio\n"
-            "   - por qué sería buena\n"
-            "   - dato concreto que la respalda\n"
-            "5) Recomendación final:\n"
-            "   - cuál opción priorizar primero y por qué\n"
-            f"6) Fuente: Medata Medellín — {sources_str}"
+            "Responde en MÁXIMO 15 líneas. Estructura:\n"
+            "1) Cómo es la zona (2 frases)\n"
+            "2) Negocio 1: nombre + por qué (1-2 frases)\n"
+            "3) Negocio 2: nombre + por qué (1-2 frases)\n"
+            "4) Negocio 3: nombre + por qué (1-2 frases)\n"
+            "5) Cuál elegir primero (1 frase)\n"
+            f"6) Fuente: Datos Medata Medellín — {sources_str}"
         )
 
     prompt = (
-        "Eres el asistente de MedCity Dashboard, un sistema de datos abiertos de Medellín, Colombia.\n\n"
-        "REGLAS ESTRICTAS:\n"
+        "Eres un asistente amigable que ayuda a emprendedores en Medellín, Colombia.\n\n"
+        "REGLAS:\n"
         "- Responde SOLO en español.\n"
-        "- NO inventes cifras ni datos. Usa ÚNICAMENTE lo que está en el contexto.\n"
-        "- Si un dato no está en el contexto, di 'No tengo esa información en la base de Medata'.\n"
-        "- Cita números exactos (tráfico: X conexiones, score: Y/1.00, etc.).\n"
-        "- Cada respuesta DEBE incluir:\n"
-        "  1) Dato concreto → cifra real del contexto\n"
-        "  2) Fuente explícita → 'Según Medata – WiFi público / registro emprendedores'\n"
-        "  3) Recomendación accionable → qué hacer con esa información\n"
-        "- Si la zona solicitada NO tiene datos directos pero hay zonas similares en el\n"
-        "  contexto, usa esos datos como referencia y aclara que son de zonas cercanas.\n\n"
+        "- Usa lenguaje sencillo, como si hablaras con alguien que NO es experto en datos.\n"
+        "- NO uses términos técnicos como 'mismatch demográfico', 'ratio', 'score', 'cuadrante', 'densidad emprendedora', 'índice de diversificación'.\n"
+        "  En su lugar di cosas como: 'hay poca competencia', 'mucha gente pasa por ahí', 'buena oportunidad'.\n"
+        "- Sé BREVE y DIRECTO. Ve al grano.\n"
+        "- NO inventes datos. Usa SOLO lo que está en el contexto.\n"
+        "- Si no tienes un dato, di 'No tenemos ese dato'.\n"
+        "- Incluye cifras reales (ejemplo: '197 emprendedores', '$500,000 en créditos').\n"
+        "- Cierra siempre con un consejo práctico.\n"
+        "- Si no hay datos directos de la zona, usa zonas cercanas y acláralo.\n\n"
         f"{tarea}\n\n"
         f"PREGUNTA: {user_q}\n\n"
         f"CONTEXTO:\n{context}\n\n"
@@ -676,11 +665,11 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
 
 def build_medcity_graph() -> Any:
     """
-    Grafo LangGraph completo (Capa 5 del plan):
+    Grafo LangGraph completo:
 
       START → router → extraer_entidades → validar_info
-            ─(completa)─→ construir_query → recuperar_datos
-                         → construir_contexto → sintetizar → END
+            ─(completa)─→ construir_query → recuperar_datos (Pinecone)
+                         → construir_contexto → sintetizar (Groq) → END
             ─(falta)────→ pedir_info → END
     """
     graph = StateGraph(MedCityState)

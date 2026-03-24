@@ -129,7 +129,7 @@ def retrieve_rag_context(
         "include_metadata": True,
     }
 
-    # Convertir filtro ChromaDB-style a Pinecone filter
+    # Convertir filtro dict simple a Pinecone filter
     if where:
         pc_filter: dict[str, Any] = {}
         for key, val in where.items():

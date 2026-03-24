@@ -38,10 +38,12 @@ from src.rag import run_medcity_graph  # noqa: E402
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="MedCity Dashboard — Medellín Emprendedora",
+    page_title="ConectEMP — Medellín Emprendedora",
     page_icon="🏙️",
     layout="wide",
 )
+
+_LOGO = Path(__file__).parent / "assets" / "logo.png"
 
 # ── Carga de datos (cacheada) ─────────────────────────────────────────────────
 @st.cache_data
@@ -63,8 +65,12 @@ def load_data():
 densidad_b, densidad_c, edad_g, flujo_b, flujo_c, master, artesanos, creditos = load_data()
 
 # ── Header ────────────────────────────────────────────────────────────────────
-st.title("🏙️ MedCity Dashboard")
-st.caption("Oportunidades de emprendimiento en Medellín — Datos Medata")
+_logo_col, _title_col = st.columns([1, 5])
+with _logo_col:
+    st.image(str(_LOGO), width=120)
+with _title_col:
+    st.title("ConectEMP")
+    st.caption("Oportunidades de emprendimiento en Medellín — Datos Medata")
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
 tab_dash, tab_chat = st.tabs(["📊 Dashboard", "💬 Asistente IA"])
@@ -508,7 +514,7 @@ with tab_chat:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    if prompt := st.chat_input("Pregúntale a MedCity..."):
+    if prompt := st.chat_input("Pregúntale a ConectEMP..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)

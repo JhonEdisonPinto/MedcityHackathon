@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-indexar.py — Indexa los datos de Medata en ChromaDB para el RAG de MedCity.
+indexar.py — Indexa documentos enriquecidos en Pinecone para el RAG.
 
-Ejecutar UNA SOLA VEZ antes de lanzar el dashboard:
+Ejecutar UNA SOLA VEZ (o al actualizar datos) antes de lanzar el dashboard:
     python indexar.py
 
-Enriquece los documentos con datos originales (Database/Originales/):
-  - Perfil emprendedor: estrato, cabeza de hogar, tipos de negocio, edad
-  - Sedes WiFi detalladas por barrio
-  - Segmentación de usuarios con métodos de autenticación
+Fuentes de datos (Database/Originales/):
+  - Registro de artesanos y emprendedores
+  - Créditos otorgados a microempresarios
+  - Puntos WiFi público y segmentación de usuarios
 
-Genera documentos de texto enriquecido por barrio, por comuna, por
-emprendedores sin WiFi, y contexto global.
+Genera 4 tipos de documento: barrio (con WiFi), barrio (sin WiFi),
+comuna y contexto global.
 """
 
 from __future__ import annotations
 
+import re
 import sys
 import unicodedata
 from pathlib import Path
@@ -86,6 +87,10 @@ def _procesar_artesanos(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
     df["barrio_norm"] = df["barrio_vereda_ciudadano"].apply(_norm_barrio)
+    # Filtrar barrios NaN o vacíos
+    df = df[df["barrio_vereda_ciudadano"].notna()]
+    df = df[df["barrio_norm"].str.strip() != ""]
+    df = df[df["barrio_norm"] != "nan"]
     df["edad"] = pd.to_numeric(df["edad"], errors="coerce")
     df["estrato"] = pd.to_numeric(df["estrato"], errors="coerce")
 
@@ -176,6 +181,10 @@ def _procesar_creditos_barrio(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
     df["barrio_norm"] = df["barrio"].apply(_norm_barrio)
+    # Filtrar barrios NaN o vacíos
+    df = df[df["barrio"].notna()]
+    df = df[df["barrio_norm"].str.strip() != ""]
+    df = df[df["barrio_norm"] != "nan"]
     df["monto"] = pd.to_numeric(df["monto"], errors="coerce")
     df["edad"] = pd.to_numeric(df["edad"], errors="coerce")
 
@@ -555,6 +564,8 @@ def _docs_barrio_sin_wifi(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list
     barrios_wifi = set(master["barrio_norm"].unique())
     sin_wifi = perfil_emp[~perfil_emp["barrio_norm"].isin(barrios_wifi)]
     sin_wifi = sin_wifi[sin_wifi["barrio_norm"] != "otro"]  # Excluir categoría genérica
+    sin_wifi = sin_wifi[sin_wifi["barrio_norm"] != "nan"]   # Excluir NaN
+    sin_wifi = sin_wifi[sin_wifi["barrio_norm"].str.strip() != ""]
 
     # Créditos por barrio
     creditos_b = _procesar_creditos_barrio(dfs["creditos_orig"])
@@ -579,7 +590,7 @@ def _docs_barrio_sin_wifi(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list
         n_tipos = int(row.get("n_tipos_unicos", 0))
         comuna_raw = str(row.get("comuna", "0"))
         # Manejar formato "03-manrique" extrayendo solo el número
-        m = __import__("re").match(r"(\d+)", comuna_raw)
+        m = re.match(r"(\d+)", comuna_raw)
         comuna = int(m.group(1)) if m else 0
         zona = row.get("zona", "sin_zona")
 
@@ -852,6 +863,7 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
 
     # Estadísticas globales de emprendedores desde datos originales
     art = dfs["artesanos_orig"].copy()
+    art = art[art["barrio_vereda_ciudadano"].notna()]
     art["edad"] = pd.to_numeric(art["edad"], errors="coerce")
     art["estrato"] = pd.to_numeric(art["estrato"], errors="coerce")
     total_emp = len(art)
@@ -898,13 +910,25 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
         pct = round(count / total_cred * 100, 1)
         descripcion_lines.append(f"  - {desc.title()}: {pct}% ({count} créditos)")
 
+    # Distribución completa por barrio (artesanos)
+    barrio_dist_art = art.groupby("barrio_vereda_ciudadano").size().sort_values(ascending=False)
+    barrio_art_lines = []
+    for barrio_name, count in barrio_dist_art.items():
+        barrio_art_lines.append(f"  - {str(barrio_name).title()}: {count} emprendedores")
+
+    # Distribución por comuna (artesanos)
+    comuna_dist_art = art.groupby("comuna_ciudadano").size().sort_values(ascending=False)
+    comuna_art_lines = []
+    for comuna_name, count in comuna_dist_art.items():
+        comuna_art_lines.append(f"  - {str(comuna_name).title()}: {count} emprendedores")
+
     doc = (
         f"CONTEXTO GENERAL — MEDELLÍN SMART CITY (Medata)\n\n"
         f"PERFIL DEMOGRÁFICO DE USUARIOS WiFi PÚBLICOS:\n"
         f"Total de usuarios registrados: {total:,}\n"
         + "\n".join(filas) + "\n\n"
         f"PERFIL GLOBAL DEL EMPRENDEDOR (Registro artesanos Medata):\n"
-        f"Total emprendedores registrados: {total_emp}\n"
+        f"Total emprendedores registrados en Medellín: {total_emp}\n"
         f"Distribuidos en {n_barrios_emp} barrios y corregimientos\n"
         f"- Edad media: {edad_media_g:.0f} años\n"
         f"- Estrato socioeconómico medio: {estrato_medio_g:.1f}\n"
@@ -914,6 +938,10 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
         f"- Tipos únicos de emprendimiento: {n_tipos_g}\n\n"
         f"DISTRIBUCIÓN POR ESTRATO SOCIOECONÓMICO:\n"
         + "\n".join(estrato_lines) + "\n\n"
+        f"DISTRIBUCIÓN COMPLETA DE ARTESANOS POR BARRIO:\n"
+        + "\n".join(barrio_art_lines) + "\n\n"
+        f"DISTRIBUCIÓN DE ARTESANOS POR COMUNA:\n"
+        + "\n".join(comuna_art_lines) + "\n\n"
         f"CRÉDITOS OTORGADOS A MICROEMPRESARIOS (panorama global):\n"
         f"Total de créditos otorgados: {total_cred}\n"
         f"Distribuidos en {n_barrios_cred} barrios y {n_comunas_cred} comunas\n"
@@ -927,6 +955,10 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
         + "\n".join(actividad_lines) + "\n\n"
         f"TOP DESCRIPCIONES DE ACTIVIDAD FINANCIADA:\n"
         + "\n".join(descripcion_lines) + "\n\n"
+        f"TOTAL COMBINADO DE EMPRENDEDORES Y MICROEMPRESARIOS:\n"
+        f"- Artesanos registrados: {total_emp}\n"
+        f"- Microempresarios con crédito: {total_cred}\n"
+        f"- Total emprendedores + microempresarios: {total_emp + total_cred}\n\n"
         f"INTERPRETACIÓN:\n"
         f"El 53.6% de los usuarios del WiFi público de Medellín son jóvenes de 18 a 28 años, "
         f"seguidos por adultos de 29 a 50 años (30.6%). "
