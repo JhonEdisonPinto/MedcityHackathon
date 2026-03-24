@@ -133,6 +133,8 @@ def router_intencion(state: MedCityState) -> MedCityState:
         "donde hay mas", "donde conviene", "emprender", "donde emprender",
         "menos emprendimientos", "mas trafico", "sin artesanos",
         "brecha de credito", "acceso a credito",
+        "credito", "creditos", "financiamiento", "financiar",
+        "microempresario", "monto", "prestamo",
     ]
     kw_comparar = [
         "cuales barrios", "cuales comunas", "comparar", "ranking",
@@ -144,6 +146,7 @@ def router_intencion(state: MedCityState) -> MedCityState:
         "describir", "indicadores", "estadisticas", "trafico", "wifi",
         "emprendedores en", "poblacion", "densidad", "tipico",
         "cuantos emprendedores", "cuantos negocios", "quien emprende",
+        "cuantos creditos", "monto financiado", "creditos otorgados",
     ]
 
     intent: Intent = "general"
@@ -309,10 +312,10 @@ def construir_query_rag(state: MedCityState) -> MedCityState:
         base = f"BARRIO: {zone}"
         if intent == "caracterizar_zona":
             rag_q = (f"{base} perfil consumidor tráfico WiFi emprendimientos "
-                     f"demográfico densidad edad dispositivo")
+                     f"demográfico densidad edad dispositivo créditos microempresarios")
         elif intent == "encontrar_oportunidad":
             rag_q = (f"{base} score oportunidad cuadrante saturación vacío "
-                     f"oferta usuarios por emprendimiento")
+                     f"oferta usuarios por emprendimiento créditos financiamiento")
         elif intent == "recomendar_negocio":
             negocio_extra = f" {tipo_negocio}" if tipo_negocio else ""
             rag_q = (f"{base} negocios recomendados tipo emprendimiento "
@@ -327,10 +330,10 @@ def construir_query_rag(state: MedCityState) -> MedCityState:
     elif intent == "encontrar_oportunidad":
         if tipo_negocio:
             rag_q = (f"oportunidad emprendimiento {tipo_negocio} saturación "
-                     f"vacío oferta barrios Medellín")
+                     f"vacío oferta barrios Medellín créditos financiamiento")
         else:
             rag_q = ("zonas alta oportunidad score emprendimiento bajo "
-                     "saturación alto tráfico WiFi vacío oferta")
+                     "saturación alto tráfico WiFi vacío oferta créditos microempresarios")
         n_results = 8
 
     elif intent == "comparar_zonas":
@@ -502,10 +505,12 @@ _PROMPTS_POR_INTENT = {
         "- Flujo de usuarios WiFi (total conexiones, sedes) si disponible\n"
         "- Perfil del consumidor WiFi (edad, género, dispositivo) si disponible\n"
         "- Perfil del emprendedor (estrato, edad media, % mujeres, cabezas de hogar, tipos de negocio)\n"
+        "- Créditos otorgados a microempresarios (número, monto total, monto promedio, actividades financiadas)\n"
         "- Score de oportunidad y cuadrante\n"
         "- Usuarios por emprendimiento (indicador de demanda no cubierta)\n"
         "- Mismatch demográfico si existe (perfil consumidor vs emprendedor)\n"
         "- Índice de diversificación de negocios\n"
+        "- Brecha de financiamiento (si no hay créditos o son pocos vs emprendedores)\n"
         "Si el barrio no tiene WiFi pero sí emprendedores, indica eso claramente.\n"
         "Dato concreto + fuente + recomendación."
     ),
@@ -514,7 +519,8 @@ _PROMPTS_POR_INTENT = {
         "- Vacío de oferta: alto tráfico WiFi pero pocos emprendimientos\n"
         "- Saturación de sector: muchos emprendimientos del mismo tipo\n"
         "- Mismatch demográfico: perfil usuario ≠ perfil emprendedor\n"
-        "- Brecha de acceso a crédito si es relevante\n"
+        "- Brecha de acceso a crédito: barrios con emprendedores pero sin/pocos créditos otorgados\n"
+        "- Análisis de financiamiento: montos totales, promedios y cobertura de créditos\n"
         "- Score de oportunidad y cuadrante de cada zona\n"
         "Rankea las zonas de mayor a menor oportunidad. Dato concreto + fuente."
     ),
@@ -523,6 +529,7 @@ _PROMPTS_POR_INTENT = {
         "- Perfil del consumidor WiFi (edad dominante, dispositivo)\n"
         "- Nivel de saturación (cuadrante y emprendimientos existentes)\n"
         "- Ratio usuarios/emprendimiento (demanda no cubierta)\n"
+        "- Créditos otorgados: qué actividades han sido financiadas y montos disponibles\n"
         "- Si el usuario menciona un tipo de negocio, evalúa si es viable ahí\n"
         "Para cada recomendación: nombre del negocio + por qué + dato que lo respalda."
     ),

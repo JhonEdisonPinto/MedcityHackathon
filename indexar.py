@@ -67,6 +67,8 @@ def _load() -> dict[str, pd.DataFrame]:
         "artesanos_orig": pd.read_csv(DB_ORIG / "registro_artesano_y_producto_formado_y_cualificados_en_diseno.csv"),
         "wifi_puntos":    pd.read_csv(DB_DIR / "wifi_puntos_medellin_comuna.csv"),
         "segmentacion":   pd.read_csv(DB_DIR / "segmentacion_de_usuarios.csv"),
+        # Créditos otorgados a microempresarios
+        "creditos_orig":  pd.read_csv(DB_ORIG / "creditos_otorgados_a_microempresarios.csv"),
     }
     # sedeWifi_por_barrio solo en originales
     sede_barrio_path = DB_ORIG / "sedeWifi_por_barrio.csv"
@@ -165,6 +167,60 @@ def _procesar_segmentacion_por_barrio(
     return result
 
 
+# ── Procesamiento de créditos a microempresarios ──────────────────────────────
+
+def _procesar_creditos_barrio(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Agrega datos de créditos otorgados por barrio.
+    Recupera: n_creditos, monto_total, monto_promedio, actividades financiadas.
+    """
+    df = df.copy()
+    df["barrio_norm"] = df["barrio"].apply(_norm_barrio)
+    df["monto"] = pd.to_numeric(df["monto"], errors="coerce")
+    df["edad"] = pd.to_numeric(df["edad"], errors="coerce")
+
+    grouped = df.groupby("barrio_norm").agg(
+        n_creditos=("monto", "count"),
+        monto_total=("monto", "sum"),
+        monto_promedio=("monto", "mean"),
+        monto_max=("monto", "max"),
+        edad_media_credito=("edad", "mean"),
+        pct_mujeres_credito=("sexo", lambda x: round((x == "mujer").sum() / len(x) * 100, 1)),
+        actividades_top=("actividad", lambda x: ", ".join(x.value_counts().head(3).index.tolist())),
+        descripciones_top=("descripcion_de_actividad", lambda x: ", ".join(x.value_counts().head(3).index.tolist())),
+        actividad_dominante=("actividad", lambda x: x.mode().iloc[0] if len(x.mode()) > 0 else "sin_dato"),
+    ).reset_index()
+
+    grouped["monto_total"] = grouped["monto_total"].round(0)
+    grouped["monto_promedio"] = grouped["monto_promedio"].round(0)
+    grouped["edad_media_credito"] = grouped["edad_media_credito"].round(1)
+
+    return grouped
+
+
+def _procesar_creditos_comuna(df: pd.DataFrame) -> pd.DataFrame:
+    """Agrega datos de créditos otorgados por comuna."""
+    df = df.copy()
+    df["comuna"] = pd.to_numeric(df["comuna"], errors="coerce")
+    df["monto"] = pd.to_numeric(df["monto"], errors="coerce")
+    df["edad"] = pd.to_numeric(df["edad"], errors="coerce")
+    df = df.dropna(subset=["comuna"])
+
+    grouped = df.groupby("comuna").agg(
+        n_creditos=("monto", "count"),
+        monto_total_creditos=("monto", "sum"),
+        monto_promedio_credito=("monto", "mean"),
+        pct_mujeres_credito=("sexo", lambda x: round((x == "mujer").sum() / len(x) * 100, 1)),
+        actividad_dominante_credito=("actividad", lambda x: x.mode().iloc[0] if len(x.mode()) > 0 else "sin_dato"),
+        n_actividades_unicas=("descripcion_de_actividad", "nunique"),
+    ).reset_index()
+
+    grouped["monto_total_creditos"] = grouped["monto_total_creditos"].round(0)
+    grouped["monto_promedio_credito"] = grouped["monto_promedio_credito"].round(0)
+
+    return grouped
+
+
 # ── Score de oportunidad ──────────────────────────────────────────────────────
 
 def _calcular_score(df: pd.DataFrame) -> pd.DataFrame:
@@ -251,6 +307,18 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
             "barrio_norm", "edad_media", "estrato_medio", "estrato_moda",
             "pct_mujeres", "pct_cabeza_hogar", "tipos_negocio", "tipo_dominante",
             "ideas_negocio", "indice_diversificacion", "n_tipos_unicos",
+        ]],
+        on="barrio_norm", how="left"
+    )
+
+    # Merge créditos otorgados a microempresarios
+    print("  → Procesando créditos a microempresarios...")
+    creditos_b = _procesar_creditos_barrio(dfs["creditos_orig"])
+    merged = merged.merge(
+        creditos_b[[
+            "barrio_norm", "n_creditos", "monto_total", "monto_promedio",
+            "monto_max", "edad_media_credito", "pct_mujeres_credito",
+            "actividades_top", "descripciones_top", "actividad_dominante",
         ]],
         on="barrio_norm", how="left"
     )
@@ -377,6 +445,44 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
                 f"- Índice de diversificación: {idx_diversif:.2f} ({n_tipos} tipos únicos)\n"
             )
 
+        # ── Sección de créditos a microempresarios ──
+        _nc = row.get("n_creditos", 0)
+        n_cred = int(_nc) if not pd.isna(_nc) else 0
+        _mt = row.get("monto_total", 0)
+        monto_total_cred = float(_mt) if not pd.isna(_mt) else 0
+        _mp = row.get("monto_promedio", 0)
+        monto_prom_cred = float(_mp) if not pd.isna(_mp) else 0
+        _mx = row.get("monto_max", 0)
+        monto_max_cred = float(_mx) if not pd.isna(_mx) else 0
+        _ec = row.get("edad_media_credito", None)
+        edad_media_cred = float(_ec) if _ec is not None and not pd.isna(_ec) else None
+        _pc = row.get("pct_mujeres_credito", 0)
+        pct_mujeres_cred = float(_pc) if not pd.isna(_pc) else 0
+        actividades_cred = row.get("actividades_top", "") or ""
+        descrip_cred = row.get("descripciones_top", "") or ""
+        activ_dom_cred = row.get("actividad_dominante", "") or ""
+
+        credito_texto = ""
+        if n_cred > 0:
+            edad_cred_line = f"- Edad media del beneficiario: {edad_media_cred:.0f} años\n" if edad_media_cred else ""
+            credito_texto = (
+                f"\nCRÉDITOS OTORGADOS A MICROEMPRESARIOS:\n"
+                f"- Créditos otorgados: {n_cred}\n"
+                f"- Monto total financiado: ${monto_total_cred:,.0f} COP\n"
+                f"- Monto promedio por crédito: ${monto_prom_cred:,.0f} COP\n"
+                f"- Monto máximo otorgado: ${monto_max_cred:,.0f} COP\n"
+                f"{edad_cred_line}"
+                f"- Mujeres beneficiarias: {pct_mujeres_cred:.1f}%\n"
+                f"- Actividades financiadas: {actividades_cred}\n"
+                f"- Descripción actividades: {descrip_cred}\n"
+                f"- Actividad dominante: {activ_dom_cred}\n"
+            )
+        else:
+            credito_texto = (
+                f"\nCRÉDITOS A MICROEMPRESARIOS: Sin datos de créditos otorgados en este barrio. "
+                f"Esto puede indicar una brecha de acceso a financiamiento.\n"
+            )
+
         doc = (
             f"BARRIO: {barrio.title()} | COMUNA: {comuna_id} | ZONA: {zona}\n"
             f"SCORE DE OPORTUNIDAD: {score:.2f}/1.00 | CUADRANTE: {cuadrante}\n\n"
@@ -397,11 +503,12 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
             f"- Computadora personal: {pct_pc:.1f}%\n"
             f"- Ratio smartphone/PC: {ratio_sp:.1f}x (cultura mobile-first)\n"
             f"{perfil_emp_texto}\n"
+            f"{credito_texto}\n"
             f"ANÁLISIS DE OPORTUNIDAD:\n"
             f"{oport_texto}{mismatch_texto}{saturacion_texto}\n\n"
             f"NEGOCIOS RECOMENDADOS PARA ESTE BARRIO:\n"
             f"{rec_negocio}\n\n"
-            f"FUENTE: Medata Medellín — WiFi público + registro artesanos y emprendedores"
+            f"FUENTE: Medata Medellín — WiFi público + registro artesanos y emprendedores + créditos microempresarios"
         )
 
         meta = {
@@ -421,6 +528,10 @@ def _docs_barrio(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
             "tipo_documento": "barrio",
             "estrato_medio": float(estrato_medio) if estrato_medio and not pd.isna(estrato_medio) else 0,
             "tiene_perfil_emprendedor": bool(edad_media_emp and not pd.isna(edad_media_emp)),
+            "n_creditos": n_cred,
+            "monto_total_creditos": float(monto_total_cred),
+            "monto_promedio_credito": float(monto_prom_cred),
+            "tiene_creditos": n_cred > 0,
         }
 
         documents.append(doc)
@@ -444,6 +555,9 @@ def _docs_barrio_sin_wifi(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list
     barrios_wifi = set(master["barrio_norm"].unique())
     sin_wifi = perfil_emp[~perfil_emp["barrio_norm"].isin(barrios_wifi)]
     sin_wifi = sin_wifi[sin_wifi["barrio_norm"] != "otro"]  # Excluir categoría genérica
+
+    # Créditos por barrio
+    creditos_b = _procesar_creditos_barrio(dfs["creditos_orig"])
 
     documents, metadatas, ids = [], [], []
 
@@ -469,10 +583,34 @@ def _docs_barrio_sin_wifi(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list
         comuna = int(m.group(1)) if m else 0
         zona = row.get("zona", "sin_zona")
 
+        # Créditos para este barrio
+        cred_row = creditos_b[creditos_b["barrio_norm"] == barrio]
+        n_cred = int(cred_row["n_creditos"].iloc[0]) if len(cred_row) > 0 else 0
+        monto_total_cred = float(cred_row["monto_total"].iloc[0]) if len(cred_row) > 0 else 0
+        monto_prom_cred = float(cred_row["monto_promedio"].iloc[0]) if len(cred_row) > 0 else 0
+        actividades_cred = str(cred_row["actividades_top"].iloc[0]) if len(cred_row) > 0 else ""
+        descrip_cred = str(cred_row["descripciones_top"].iloc[0]) if len(cred_row) > 0 else ""
+
+        credito_texto = ""
+        if n_cred > 0:
+            credito_texto = (
+                f"\nCRÉDITOS OTORGADOS A MICROEMPRESARIOS:\n"
+                f"- Créditos otorgados: {n_cred}\n"
+                f"- Monto total financiado: ${monto_total_cred:,.0f} COP\n"
+                f"- Monto promedio por crédito: ${monto_prom_cred:,.0f} COP\n"
+                f"- Actividades financiadas: {actividades_cred}\n"
+                f"- Descripción actividades: {descrip_cred}\n"
+            )
+        else:
+            credito_texto = (
+                f"\nCRÉDITOS A MICROEMPRESARIOS: Sin datos de créditos otorgados. "
+                f"Posible brecha de acceso a financiamiento.\n"
+            )
+
         doc = (
             f"BARRIO: {barrio.title()} | COMUNA: {comuna} | ZONA: {zona}\n"
             f"NOTA: Este barrio NO tiene cobertura WiFi pública medida por Medata.\n"
-            f"Los datos provienen exclusivamente del registro de emprendedores.\n\n"
+            f"Los datos provienen del registro de emprendedores y créditos.\n\n"
             f"PERFIL EMPRENDEDOR:\n"
             f"- Emprendedores registrados: {n_emp}\n"
             f"- Edad media: {edad_media:.0f} años\n"
@@ -483,12 +621,14 @@ def _docs_barrio_sin_wifi(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list
             f"- Tipos de negocio: {tipos}\n"
             f"- Tipo dominante: {tipo_dom}\n"
             f"- Ideas de negocio: {ideas}\n"
-            f"- Índice de diversificación: {idx_div:.2f} ({n_tipos} tipos)\n\n"
+            f"- Índice de diversificación: {idx_div:.2f} ({n_tipos} tipos)\n"
+            f"{credito_texto}\n"
             f"ANÁLISIS:\n"
             f"Sin datos de tráfico WiFi no se puede calcular vacío de oferta. "
             f"Sin embargo, con {n_emp} emprendedores activos en estrato {estrato_medio:.1f}, "
-            f"el barrio muestra actividad económica con {'alta diversificación' if idx_div > 0.5 else 'concentración en ' + tipo_dom}.\n\n"
-            f"FUENTE: Medata Medellín — Registro artesanos y emprendedores"
+            f"el barrio muestra actividad económica con {'alta diversificación' if idx_div > 0.5 else 'concentración en ' + tipo_dom}."
+            f"{' Cuenta con ' + str(n_cred) + ' créditos otorgados por $' + f'{monto_total_cred:,.0f}' + ' COP.' if n_cred > 0 else ' Sin créditos registrados, lo que indica brecha de financiamiento.'}\n\n"
+            f"FUENTE: Medata Medellín — Registro artesanos, emprendedores y créditos microempresarios"
         )
 
         meta = {
@@ -499,6 +639,9 @@ def _docs_barrio_sin_wifi(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list
             "emprendedores": n_emp,
             "estrato_medio": float(estrato_medio) if not pd.isna(estrato_medio) else 0,
             "tiene_wifi": False,
+            "n_creditos": n_cred,
+            "monto_total_creditos": float(monto_total_cred),
+            "tiene_creditos": n_cred > 0,
         }
 
         documents.append(doc)
@@ -587,6 +730,10 @@ def _docs_comuna(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
     merged["total_registros"] = merged["total_registros"].fillna(0)
     merged["n_sedes"] = merged["n_sedes"].fillna(0).astype(int)
 
+    # Créditos agregados por comuna
+    creditos_c = _procesar_creditos_comuna(dfs["creditos_orig"])
+    merged = merged.merge(creditos_c, on="comuna", how="left")
+
     documents, metadatas, ids = [], [], []
 
     for _, row in merged.iterrows():
@@ -629,6 +776,26 @@ def _docs_comuna(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
                 f"- Diversidad de rubros: {n_tipos} tipos únicos\n"
             )
 
+        # Créditos a nivel comuna
+        n_cred_c = int(row.get("n_creditos", 0) or 0)
+        monto_total_c = float(row.get("monto_total_creditos", 0) or 0)
+        monto_prom_c = float(row.get("monto_promedio_credito", 0) or 0)
+        pct_mujeres_cred_c = row.get("pct_mujeres_credito", 0)
+        activ_dom_cred_c = row.get("actividad_dominante_credito", "")
+        n_activ_unicas_c = int(row.get("n_actividades_unicas", 0) or 0)
+
+        credito_sec = ""
+        if n_cred_c > 0:
+            credito_sec = (
+                f"\nCRÉDITOS OTORGADOS A MICROEMPRESARIOS:\n"
+                f"- Créditos otorgados en la comuna: {n_cred_c}\n"
+                f"- Monto total financiado: ${monto_total_c:,.0f} COP\n"
+                f"- Monto promedio por crédito: ${monto_prom_c:,.0f} COP\n"
+                f"- Mujeres beneficiarias: {pct_mujeres_cred_c:.1f}%\n"
+                f"- Actividad dominante financiada: {activ_dom_cred_c}\n"
+                f"- Actividades únicas financiadas: {n_activ_unicas_c}\n"
+            )
+
         doc = (
             f"COMUNA: {nombre} (ID: {comuna_id})\n"
             f"NIVEL DE OPORTUNIDAD EMPRENDEDORA: {nivel_oport}\n\n"
@@ -641,11 +808,13 @@ def _docs_comuna(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
             f"- Total conexiones registradas: {trafico:,}\n"
             f"- Promedio mensual por sede: {media_sede:,.0f} conexiones\n"
             f"{perfil_emp_sec}\n"
+            f"{credito_sec}\n"
             f"INTERPRETACIÓN:\n"
             f"La comuna {nombre} tiene una densidad de {densidad:.4f} emprendedores "
             f"por 1,000 habitantes sobre una población de {poblacion:,}. "
             f"{'Con bajo nivel de emprendimiento relativo, representa una zona de alta oportunidad.' if nivel_oport in ('MUY ALTA','ALTA') else 'La zona presenta un nivel competitivo moderado-alto.'}"
-            f"\n\nFUENTE: Medata Medellín — Registro emprendedores + WiFi público"
+            f"{' Se han otorgado ' + str(n_cred_c) + ' créditos por $' + f'{monto_total_c:,.0f}' + ' COP a microempresarios.' if n_cred_c > 0 else ''}"
+            f"\n\nFUENTE: Medata Medellín — Registro emprendedores + WiFi público + créditos microempresarios"
         )
 
         meta = {
@@ -659,6 +828,9 @@ def _docs_comuna(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], l
             "n_sedes_wifi": n_sedes,
             "nivel_oportunidad": nivel_oport,
             "estrato_medio": float(estrato_medio_emp) if estrato_medio_emp and not pd.isna(estrato_medio_emp) else 0,
+            "n_creditos": n_cred_c,
+            "monto_total_creditos": float(monto_total_c),
+            "tiene_creditos": n_cred_c > 0,
         }
 
         documents.append(doc)
@@ -698,6 +870,34 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
         pct = round(count / total_emp * 100, 1)
         estrato_lines.append(f"  - Estrato {int(est)}: {pct}% ({count} emprendedores)")
 
+    # Estadísticas globales de créditos a microempresarios
+    cred = dfs["creditos_orig"].copy()
+    cred["monto"] = pd.to_numeric(cred["monto"], errors="coerce")
+    cred["edad"] = pd.to_numeric(cred["edad"], errors="coerce")
+    total_cred = len(cred)
+    monto_total_g = cred["monto"].sum()
+    monto_prom_g = cred["monto"].mean()
+    monto_mediana_g = cred["monto"].median()
+    pct_mujeres_cred_g = round((cred["sexo"] == "mujer").sum() / total_cred * 100, 1)
+    edad_media_cred_g = cred["edad"].mean()
+    actividad_dom_g = cred["actividad"].mode().iloc[0]
+    n_barrios_cred = cred["barrio"].nunique()
+    n_comunas_cred = cred["comuna"].dropna().nunique()
+
+    # Top actividades financiadas
+    top_actividades = cred["actividad"].value_counts().head(5)
+    actividad_lines = []
+    for act, count in top_actividades.items():
+        pct = round(count / total_cred * 100, 1)
+        actividad_lines.append(f"  - {act.title()}: {pct}% ({count} créditos)")
+
+    # Top descripciones
+    top_descripciones = cred["descripcion_de_actividad"].value_counts().head(5)
+    descripcion_lines = []
+    for desc, count in top_descripciones.items():
+        pct = round(count / total_cred * 100, 1)
+        descripcion_lines.append(f"  - {desc.title()}: {pct}% ({count} créditos)")
+
     doc = (
         f"CONTEXTO GENERAL — MEDELLÍN SMART CITY (Medata)\n\n"
         f"PERFIL DEMOGRÁFICO DE USUARIOS WiFi PÚBLICOS:\n"
@@ -714,6 +914,19 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
         f"- Tipos únicos de emprendimiento: {n_tipos_g}\n\n"
         f"DISTRIBUCIÓN POR ESTRATO SOCIOECONÓMICO:\n"
         + "\n".join(estrato_lines) + "\n\n"
+        f"CRÉDITOS OTORGADOS A MICROEMPRESARIOS (panorama global):\n"
+        f"Total de créditos otorgados: {total_cred}\n"
+        f"Distribuidos en {n_barrios_cred} barrios y {n_comunas_cred} comunas\n"
+        f"- Monto total financiado: ${monto_total_g:,.0f} COP\n"
+        f"- Monto promedio por crédito: ${monto_prom_g:,.0f} COP\n"
+        f"- Monto mediana por crédito: ${monto_mediana_g:,.0f} COP\n"
+        f"- Edad media del beneficiario: {edad_media_cred_g:.0f} años\n"
+        f"- Mujeres beneficiarias: {pct_mujeres_cred_g}%\n"
+        f"- Actividad económica dominante: {actividad_dom_g}\n\n"
+        f"DISTRIBUCIÓN POR ACTIVIDAD ECONÓMICA FINANCIADA:\n"
+        + "\n".join(actividad_lines) + "\n\n"
+        f"TOP DESCRIPCIONES DE ACTIVIDAD FINANCIADA:\n"
+        + "\n".join(descripcion_lines) + "\n\n"
         f"INTERPRETACIÓN:\n"
         f"El 53.6% de los usuarios del WiFi público de Medellín son jóvenes de 18 a 28 años, "
         f"seguidos por adultos de 29 a 50 años (30.6%). "
@@ -722,8 +935,12 @@ def _doc_global(dfs: dict[str, pd.DataFrame]) -> tuple[list[str], list[dict], li
         f"La ciudad tiene 21 barrios con cobertura WiFi medida por Medata y {n_barrios_emp} barrios con "
         f"registro de emprendedores, distribuidos en 16 comunas. "
         f"El emprendedor típico tiene {edad_media_g:.0f} años, es de estrato {estrato_medio_g:.1f}, "
-        f"y el {pct_cabeza_g}% son cabezas de hogar.\n\n"
-        f"FUENTE: Medata Medellín — distribución WiFi + registro artesanos y emprendedores"
+        f"y el {pct_cabeza_g}% son cabezas de hogar. "
+        f"Se han otorgado {total_cred} créditos a microempresarios por un total de "
+        f"${monto_total_g:,.0f} COP, con un monto promedio de ${monto_prom_g:,.0f} COP. "
+        f"La actividad dominante financiada es {actividad_dom_g} y solo el {pct_mujeres_cred_g}% "
+        f"de los créditos fueron para mujeres.\n\n"
+        f"FUENTE: Medata Medellín — distribución WiFi + registro artesanos y emprendedores + créditos microempresarios"
     )
 
     return [doc], [{"tipo_documento": "global", "zone": "medellin"}], ["global_medellin"]

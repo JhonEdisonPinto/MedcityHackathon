@@ -53,10 +53,14 @@ def load_data():
     flujo_c = pd.read_csv(DATA / "flujo_wifi_comuna.csv")
     master = pd.read_csv(DATA / "master_wifi_barrio.csv")
     artesanos = pd.read_csv(DB_ORIG / "registro_artesano_y_producto_formado_y_cualificados_en_diseno.csv")
-    return densidad_b, densidad_c, edad_g, flujo_b, flujo_c, master, artesanos
+    creditos = pd.read_csv(DB_ORIG / "creditos_otorgados_a_microempresarios.csv")
+    creditos["monto"] = pd.to_numeric(creditos["monto"], errors="coerce")
+    creditos["edad"] = pd.to_numeric(creditos["edad"], errors="coerce")
+    creditos["comuna"] = pd.to_numeric(creditos["comuna"], errors="coerce")
+    return densidad_b, densidad_c, edad_g, flujo_b, flujo_c, master, artesanos, creditos
 
 
-densidad_b, densidad_c, edad_g, flujo_b, flujo_c, master, artesanos = load_data()
+densidad_b, densidad_c, edad_g, flujo_b, flujo_c, master, artesanos, creditos = load_data()
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.title("🏙️ MedCity Dashboard")
@@ -74,12 +78,16 @@ with tab_dash:
     total_barrios = len(densidad_b)
     total_usuarios = int(edad_g["total_usuarios"].sum())
     total_comunas = len(densidad_c)
+    total_creditos = len(creditos)
+    monto_total_cred = creditos["monto"].sum()
 
-    k1, k2, k3, k4 = st.columns(4)
+    k1, k2, k3, k4, k5, k6 = st.columns(6)
     k1.metric("Emprendedores", f"{total_emp:,}")
     k2.metric("Barrios con datos", total_barrios)
     k3.metric("Usuarios WiFi", f"{total_usuarios:,}")
     k4.metric("Comunas", total_comunas)
+    k5.metric("Créditos otorgados", f"{total_creditos:,}")
+    k6.metric("Monto financiado", f"${monto_total_cred:,.0f}")
 
     st.divider()
 
@@ -316,6 +324,138 @@ with tab_dash:
         )
         fig_zona.update_traces(textposition="outside")
         st.plotly_chart(fig_zona, width="stretch")
+
+    st.divider()
+
+    # ── Fila 6: Créditos a microempresarios ──────────────────────────────────
+    st.subheader("💳 Créditos otorgados a microempresarios")
+    col9, col10 = st.columns(2)
+
+    with col9:
+        st.markdown("**Top 15 barrios por monto financiado**")
+        cred_barrio = (
+            creditos.groupby("barrio")
+            .agg(n_creditos=("monto", "count"), monto_total=("monto", "sum"))
+            .sort_values("monto_total", ascending=False)
+            .head(15)
+            .reset_index()
+        )
+        cred_barrio = cred_barrio.sort_values("monto_total")
+        fig_cred_barrio = px.bar(
+            cred_barrio,
+            x="monto_total",
+            y="barrio",
+            orientation="h",
+            color="n_creditos",
+            color_continuous_scale="Oranges",
+            text=cred_barrio["monto_total"].apply(lambda x: f"${x:,.0f}"),
+        )
+        fig_cred_barrio.update_layout(
+            height=450,
+            yaxis_title="",
+            xaxis_title="Monto total (COP)",
+            coloraxis_colorbar_title="# Créditos",
+            margin=dict(l=10, r=10, t=10, b=10),
+        )
+        fig_cred_barrio.update_traces(textposition="outside")
+        st.plotly_chart(fig_cred_barrio, width="stretch")
+
+    with col10:
+        st.markdown("**Distribución por actividad económica**")
+        activ_counts = creditos["actividad"].value_counts().reset_index()
+        activ_counts.columns = ["Actividad", "Créditos"]
+        fig_activ = px.pie(
+            activ_counts,
+            values="Créditos",
+            names="Actividad",
+            hole=0.45,
+            color_discrete_sequence=px.colors.qualitative.Set3,
+        )
+        fig_activ.update_layout(
+            height=450,
+            margin=dict(l=10, r=10, t=10, b=10),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.2),
+        )
+        fig_activ.update_traces(textinfo="percent+label")
+        st.plotly_chart(fig_activ, width="stretch")
+
+    st.divider()
+
+    col11, col12 = st.columns(2)
+
+    with col11:
+        st.markdown("**Monto financiado por comuna**")
+        cred_comuna = (
+            creditos.dropna(subset=["comuna"])
+            .groupby("comuna")
+            .agg(n_creditos=("monto", "count"), monto_total=("monto", "sum"))
+            .sort_values("monto_total", ascending=False)
+            .reset_index()
+        )
+        cred_comuna["comuna"] = cred_comuna["comuna"].astype(int).astype(str)
+        fig_cred_comuna = px.bar(
+            cred_comuna,
+            x="comuna",
+            y="monto_total",
+            color="n_creditos",
+            color_continuous_scale="Teal",
+            text=cred_comuna["monto_total"].apply(lambda x: f"${x:,.0f}"),
+        )
+        fig_cred_comuna.update_layout(
+            height=400,
+            xaxis_title="Comuna",
+            yaxis_title="Monto total (COP)",
+            coloraxis_colorbar_title="# Créditos",
+            margin=dict(l=10, r=10, t=10, b=10),
+        )
+        fig_cred_comuna.update_traces(textposition="outside")
+        st.plotly_chart(fig_cred_comuna, width="stretch")
+
+    with col12:
+        st.markdown("**Género de beneficiarios de créditos**")
+        sexo_cred = creditos["sexo"].value_counts().reset_index()
+        sexo_cred.columns = ["Género", "Créditos"]
+        fig_sexo_cred = px.pie(
+            sexo_cred,
+            values="Créditos",
+            names="Género",
+            hole=0.5,
+            color_discrete_map={"mujer": "#ff6b81", "hombre": "#4ecdc4"},
+        )
+        fig_sexo_cred.update_layout(
+            height=400,
+            margin=dict(l=10, r=10, t=10, b=10),
+        )
+        fig_sexo_cred.update_traces(textinfo="percent+value")
+        st.plotly_chart(fig_sexo_cred, width="stretch")
+
+    st.divider()
+
+    st.markdown("**Top 10 actividades financiadas (descripción detallada)**")
+    desc_counts = (
+        creditos["descripcion_de_actividad"]
+        .value_counts()
+        .head(10)
+        .reset_index()
+    )
+    desc_counts.columns = ["Descripción", "Créditos"]
+    fig_desc = px.bar(
+        desc_counts,
+        x="Créditos",
+        y="Descripción",
+        orientation="h",
+        color="Créditos",
+        color_continuous_scale="Purples",
+        text="Créditos",
+    )
+    fig_desc.update_layout(
+        height=400,
+        yaxis_title="",
+        coloraxis_showscale=False,
+        margin=dict(l=10, r=10, t=10, b=10),
+    )
+    fig_desc.update_traces(textposition="outside")
+    st.plotly_chart(fig_desc, width="stretch")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
