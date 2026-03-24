@@ -9,8 +9,15 @@ import streamlit as st
 
 # ── Setup paths ───────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "dashboard" / "data"
-DB_ORIG = ROOT / "Database" / "Originales"
+
+# Resolver case-sensitivity (Windows: dashboard, Linux/Git: Dashboard)
+_data_lower = ROOT / "dashboard" / "data"
+_data_upper = ROOT / "Dashboard" / "data"
+DATA = _data_lower if _data_lower.exists() else _data_upper
+
+_db_orig = ROOT / "Database" / "Originales"
+DB_ORIG = _db_orig
+
 sys.path.insert(0, str(ROOT))
 
 # ── Inyectar secrets de Streamlit Cloud → env vars ────────────────────────────
