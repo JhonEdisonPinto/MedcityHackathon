@@ -7,16 +7,16 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-import chromadb
 from dotenv import load_dotenv
+from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
 
 
 @dataclass(frozen=True)
 class RagSettings:
     embedding_model: str = "all-MiniLM-L6-v2"
-    chroma_collection: str = "medcity_documents"
-    chroma_persist_dir: str = "models/vectorstore/chroma"
+    pinecone_api_key: str = ""
+    pinecone_index: str = "medcity"
     top_k: int = 5
 
     @classmethod
@@ -27,24 +27,28 @@ class RagSettings:
         load_dotenv(repo_root / ".env", override=False)
         load_dotenv(current_file.parent / ".env", override=False)
 
+        # Fallback: leer st.secrets si estamos en Streamlit y falta alguna key
+        _STREAMLIT_KEYS = [
+            "PINECONE_API_KEY", "PINECONE_INDEX",
+            "GROQ_API_KEY", "GROQ_MODEL",
+            "RAG_EMBEDDING_MODEL", "RAG_TOP_K",
+        ]
+        try:
+            import streamlit as st
+            for key in _STREAMLIT_KEYS:
+                if not os.environ.get(key):
+                    val = st.secrets.get(key)
+                    if val:
+                        os.environ[key] = str(val)
+        except Exception:
+            pass
+
         return cls(
             embedding_model=os.getenv("RAG_EMBEDDING_MODEL", "all-MiniLM-L6-v2").strip(),
-            chroma_collection=os.getenv("RAG_CHROMA_COLLECTION", "medcity_documents").strip(),
-            chroma_persist_dir=os.getenv("RAG_CHROMA_PERSIST_DIR", "models/vectorstore/chroma").strip(),
+            pinecone_api_key=os.getenv("PINECONE_API_KEY", "").strip(),
+            pinecone_index=os.getenv("PINECONE_INDEX", "medcity").strip(),
             top_k=int(os.getenv("RAG_TOP_K", "5")),
         )
-
-
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[1]
-
-
-def _abs_persist_dir(persist_dir: str) -> str:
-    path = Path(persist_dir)
-    if not path.is_absolute():
-        path = _repo_root() / path
-    path.mkdir(parents=True, exist_ok=True)
-    return str(path)
 
 
 def build_embedding_model(settings: RagSettings | None = None) -> SentenceTransformer:
@@ -52,26 +56,17 @@ def build_embedding_model(settings: RagSettings | None = None) -> SentenceTransf
     return _cached_embedding_model(cfg.embedding_model)
 
 
-def build_chroma_client(settings: RagSettings | None = None) -> chromadb.PersistentClient:
-    cfg = settings or RagSettings.from_env()
-    persist_dir = _abs_persist_dir(cfg.chroma_persist_dir)
-    return _cached_chroma_client(persist_dir)
-
-
 @lru_cache(maxsize=4)
 def _cached_embedding_model(model_name: str) -> SentenceTransformer:
     return SentenceTransformer(model_name)
 
 
-@lru_cache(maxsize=4)
-def _cached_chroma_client(persist_dir: str) -> chromadb.PersistentClient:
-    return chromadb.PersistentClient(path=persist_dir)
-
-
-def build_chroma_collection(settings: RagSettings | None = None) -> Any:
+def _build_pinecone_index(settings: RagSettings | None = None) -> Any:
     cfg = settings or RagSettings.from_env()
-    client = build_chroma_client(cfg)
-    return client.get_or_create_collection(name=cfg.chroma_collection)
+    if not cfg.pinecone_api_key:
+        raise ValueError("PINECONE_API_KEY no configurada en .env")
+    pc = Pinecone(api_key=cfg.pinecone_api_key)
+    return pc.Index(cfg.pinecone_index)
 
 
 def upsert_rag_documents(
@@ -84,21 +79,34 @@ def upsert_rag_documents(
         return 0
 
     cfg = settings or RagSettings.from_env()
-    collection = build_chroma_collection(cfg)
+    index = _build_pinecone_index(cfg)
     model = build_embedding_model(cfg)
 
     final_ids = ids or [str(uuid.uuid4()) for _ in documents]
     embeddings = model.encode(documents).tolist()
 
-    payload: dict[str, Any] = {
-        "ids": final_ids,
-        "documents": documents,
-        "embeddings": embeddings,
-    }
-    if metadatas is not None:
-        payload["metadatas"] = metadatas
+    # Pinecone upsert en lotes de 100
+    vectors = []
+    for i, (vid, emb, doc) in enumerate(zip(final_ids, embeddings, documents)):
+        meta = dict(metadatas[i]) if metadatas and i < len(metadatas) else {}
+        # Pinecone metadata: guardar texto del documento (max 40KB por vector)
+        meta["_document"] = doc[:39000]
+        # Asegurar que todos los valores de metadata sean tipos soportados
+        clean_meta = {}
+        for k, v in meta.items():
+            if isinstance(v, (str, int, float, bool)):
+                clean_meta[k] = v
+            elif isinstance(v, list) and all(isinstance(x, str) for x in v):
+                clean_meta[k] = v
+            else:
+                clean_meta[k] = str(v)
+        vectors.append({"id": vid, "values": emb, "metadata": clean_meta})
 
-    collection.upsert(**payload)
+    batch_size = 100
+    for start in range(0, len(vectors), batch_size):
+        batch = vectors[start : start + batch_size]
+        index.upsert(vectors=batch)
+
     return len(documents)
 
 
@@ -106,31 +114,46 @@ def retrieve_rag_context(
     query_text: str,
     settings: RagSettings | None = None,
     n_results: int | None = None,
+    where: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     cfg = settings or RagSettings.from_env()
-    collection = build_chroma_collection(cfg)
+    index = _build_pinecone_index(cfg)
     model = build_embedding_model(cfg)
 
     top_k = n_results or cfg.top_k
     embedding = model.encode([query_text]).tolist()[0]
 
-    result = collection.query(
-        query_embeddings=[embedding],
-        n_results=top_k,
-        include=["documents", "metadatas", "distances"],
-    )
+    query_kwargs: dict[str, Any] = {
+        "vector": embedding,
+        "top_k": top_k,
+        "include_metadata": True,
+    }
 
-    docs = (result.get("documents") or [[]])[0]
-    metas = (result.get("metadatas") or [[]])[0]
-    distances = (result.get("distances") or [[]])[0]
+    # Convertir filtro ChromaDB-style a Pinecone filter
+    if where:
+        pc_filter: dict[str, Any] = {}
+        for key, val in where.items():
+            if isinstance(val, dict):
+                # Ya es formato operador {"$eq": ...}
+                pc_filter[key] = val
+            else:
+                pc_filter[key] = {"$eq": val}
+        query_kwargs["filter"] = pc_filter
+
+    result = index.query(**query_kwargs)
 
     items: list[dict[str, Any]] = []
-    for idx, doc in enumerate(docs):
+    for match in result.get("matches", []):
+        meta = dict(match.get("metadata", {}))
+        doc_text = meta.pop("_document", "")
+        score = match.get("score", 0)
+        # Pinecone cosine: score 1.0 = idéntico, convertir a distancia
+        distance = 1.0 - score
         items.append(
             {
-                "document": doc,
-                "metadata": metas[idx] if idx < len(metas) else {},
-                "distance": distances[idx] if idx < len(distances) else None,
+                "document": doc_text,
+                "metadata": meta,
+                "distance": distance,
             }
         )
     return items
