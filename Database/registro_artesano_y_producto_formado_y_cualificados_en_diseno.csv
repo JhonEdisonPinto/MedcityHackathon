@@ -1,200 +1,200 @@
-edad,sexo,cabeza_de_hogar,caracterizacion_ciudadano,tipo_de_emprendimiento,idea_de_negocio,estrato,barrio_vereda_ciudadano,comuna_ciudadano,zona_ciudadano,fecha_de_beneficio_dia,fecha_de_beneficio_mes,fecha_de_beneficio_año
-63,masculino,si,emprendedor,artesanal,emprendedor,2,robledo,7,nor-occidental,15,9,2017.0
-56,masculino,no,emprendedor,artesanal,emprendedor,3,bombona,10,centro-oriental,15,9,2017.0
-74,masculino,si,emprendedor,artesanal,emprendedor,3,guayabal,15,sur-oriental,15,9,2017.0
-54,femenino,si,emprendedor,artesanal,emprendedor,4,america - santa monica #2,12,centro-oriental,15,9,2017.0
-50,femenino,si,emprendedor,artesanal,emprendedor,4,america - santa monica #2,12,centro-oriental,15,9,2017.0
-52,femenino,si,emprendedor,artesanal,emprendedor,3,san javier,13,centro-oriental,15,9,2017.0
-27,femenino,no,emprendedor,artesanal,emprendedor,3,robledo,7,nor-occidental,15,9,2017.0
-61,masculino,no,emprendedor,artesanal,emprendedor,3,campovaldes,4,nor-oriental,15,9,2017.0
-43,femenino,no,emprendedor,artesanal,emprendedor,2,doce de octubre,6,nor-occidental,15,9,2017.0
-39,femenino,no,emprendedor,artesanal,emprendedor,2,santa elena parte central,90,oriente,15,9,2017.0
-44,masculino,no,emprendedor,artesanal,emprendedor,3,manrique,3,nor-oriental,15,9,2017.0
-39,femenino,si,emprendedor,artesanal,emprendedor,2,manrique oriental,3,nor-oriental,15,9,2017.0
-59,masculino,si,emprendedor,artesanal,emprendedor,3,aranjuez,4,nor-oriental,15,9,2017.0
-53,femenino,si,emprendedor,artesanal,emprendedor,2,campovaldes,4,nor-oriental,15,9,2017.0
-41,femenino,si,emprendedor,artesanal,emprendedor,3,unidad residencial la macarena - naranjal,11,centro-oriental,15,9,2017.0
-51,masculino,no,emprendedor,artesanal,emprendedor,3,castilla,5,nor-occidental,15,9,2017.0
-56,femenino,si,emprendedor,artesanal,emprendedor,2,santa elena,90,oriente,15,9,2017.0
-36,masculino,si,emprendedor,artesanal,emprendedor,3,campovaldes,4,nor-oriental,15,9,2017.0
-54,masculino,si,emprendedor,artesanal,emprendedor,2,castilla,5,nor-occidental,15,9,2017.0
-32,femenino,no,emprendedor,artesanal,emprendedor,2,castilla,5,nor-occidental,15,9,2017.0
-33,femenino,no,emprendedor,artesanal,emprendedor,5,ciudad del rio,14,sur-oriental,15,9,2017.0
-56,femenino,si,emprendedor,artesanal,emprendedor,3,francisco antonio zea,5,nor-occidental,15,9,2017.0
-69,femenino,si,emprendedor,artesanal,emprendedor,3,boston,8,centro-oriental,15,9,2017.0
-45,femenino,no,emprendedor,artesanal,emprendedor,3,francisco antonio zea,5,nor-occidental,15,9,2017.0
-52,femenino,si,emprendedor,artesanal,emprendedor,2,enciso,8,centro-oriental,15,9,2017.0
-37,femenino,si,emprendedor,artesanal,emprendedor,2,corregimiento san cristobal,60,occidente,15,9,2017.0
-52,femenino,si,emprendedor,artesanal,emprendedor,3,villahermosa,8,centro-oriental,15,9,2017.0
-67,femenino,si,emprendedor,artesanal,emprendedor,5,calazanz,12,centro-oriental,15,9,2017.0
-33,masculino,si,emprendedor,artesanal,emprendedor,3,francisco antonio zea,5,nor-occidental,15,9,2017.0
-52,femenino,si,emprendedor,artesanal,emprendedor,3,manrique,3,nor-oriental,15,9,2017.0
-37,masculino,si,emprendedor,artesanal,emprendedor,3,miraflorez,9,centro-oriental,15,9,2017.0
-53,femenino,no,emprendedor,artesanal,emprendedor,2,colinas de enciso,8,centro-oriental,15,9,2017.0
-53,femenino,si,emprendedor,artesanal,emprendedor,3,robledo,6,nor-occidental,15,9,2017.0
-68,masculino,no,emprendedor,artesanal,emprendedor,5,simon bolivar,12,centro-oriental,15,9,2017.0
-52,femenino,no,emprendedor,artesanal,emprendedor,3,corregimiento santa helena,90,oriente,15,9,2017.0
-26,femenino,no,emprendedor,artesanal,emprendedor,6,poblado,14,sur-oriental,15,9,2017.0
-40,femenino,no,emprendedor,artesanal,emprendedor,1,nuevo occidente san cristobal,60,occidente,15,9,2017.0
-60,femenino,si,emprendedor,artesanal,emprendedor,3,san miguel,8,centro-oriental,15,9,2017.0
-70,masculino,si,emprendedor,artesanal,emprendedor,3,floresta los alcazares,13,centro-oriental,15,9,2017.0
-65,masculino,no,emprendedor,artesanal,emprendedor,2,villahermosa,8,centro-oriental,15,9,2017.0
-42,masculino,si,emprendedor,artesanal,emprendedor,3,robledo,7,nor-occidental,15,9,2017.0
-40,masculino,si,emprendedor,artesanal,emprendedor,3,sucre,10,centro-oriental,15,9,2017.0
-72,femenino,no,emprendedor,artesanal,emprendedor,5,velodromo,11,centro-oriental,15,9,2017.0
-34,masculino,no,emprendedor,artesanal,emprendedor,2,santa helena - vereda paisandú,90,oriente,15,9,2017.0
-56,femenino,si,emprendedor,artesanal,emprendedor,3,belen san bernardo,16,sur-oriental,15,9,2017.0
-57,masculino,si,emprendedor,artesanal,emprendedor,4,santa monica,12,centro-oriental,15,9,2017.0
-37,femenino,no,emprendedor,artesanal,emprendedor,2,santa helena - el charrascal,90,oriente,15,9,2017.0
-43,femenino,no,emprendedor,artesanal,emprendedor,3,campovaldes,4,nor-oriental,15,9,2017.0
-63,femenino,si,emprendedor,artesanal,emprendedor,4,buenos aires,9,centro-oriental,15,9,2017.0
-33,masculino,si,emprendedor,artesanal,emprendedor,1,caicedo sector la libertad,8,centro-oriental,15,9,2017.0
-23,masculino,si,emprendedor,artesanal,emprendedor,2,niquitao,10,centro-oriental,15,9,2017.0
-58,femenino,si,emprendedor,artesanal,emprendedor,1,villa mercedes colina de enciso,8,centro-oriental,15,9,2017.0
-38,femenino,si,emprendedor,artesanal,emprendedor,2,centro,10,centro-oriental,15,9,2017.0
-28,masculino,no,emprendedor,artesanal,emprendedor,5,laureles,11,centro-oriental,15,9,2017.0
-62,femenino,no,emprendedor,artesanal,emprendedor,2,sucre parte alta,8,centro-oriental,15,9,2017.0
-63,femenino,no,emprendedor,artesanal,emprendedor,2,robledo la campiña,7,nor-occidental,15,9,2017.0
-64,femenino,si,emprendedor,artesanal,emprendedor,3,san antonio de prado,80,sur-occidental,15,9,2017.0
-66,femenino,no,emprendedor,artesanal,emprendedor,4,san diego / terrazas de san diego,10,centro-oriental,15,9,2017.0
-51,femenino,si,emprendedor,artesanal,emprendedor,3,salvador,9,centro-oriental,15,9,2017.0
-57,femenino,si,emprendedor,artesanal,emprendedor,3,barrio las palmas,10,centro-oriental,15,9,2017.0
-61,femenino,si,emprendedor,artesanal,emprendedor,5,calasanz,12,centro-oriental,15,9,2017.0
-47,femenino,no,emprendedor,artesanal,emprendedor,4,san javier el departamento,13,centro-oriental,15,9,2017.0
-55,masculino,si,emprendedor,artesanal,emprendedor,3,san antonio de prado vereda el vergel,80,sur-occidental,15,9,2017.0
-34,masculino,no,emprendedor,artesanal,emprendedor,2,moravia,4,nor-oriental,15,9,2017.0
-40,masculino,si,emprendedor,artesanal,emprendedor,2,aranjuez,4,nor-oriental,15,9,2017.0
-65,femenino,no,emprendedor,artesanal,emprendedor,3,castilla,5,nor-occidental,15,9,2017.0
-41,masculino,no,emprendedor,artesanal,emprendedor,4,buenos aires miraflorez,9,centro-oriental,15,9,2017.0
-50,masculino,no,emprendedor,artesanal,emprendedor,5,belen rosales,16,sur-oriental,15,9,2017.0
-60,femenino,si,emprendedor,artesanal,emprendedor,5,simon bolivar,12,centro-oriental,15,9,2017.0
-45,masculino,si,emprendedor,artesanal,emprendedor,2,villahermosa,8,centro-oriental,15,9,2017.0
-52,femenino,si,emprendedor,artesanal,emprendedor,4,la america,12,centro-oriental,15,9,2017.0
-58,femenino,no,emprendedor,artesanal,emprendedor,4,naranjal,11,centro-oriental,15,9,2017.0
-68,masculino,si,emprendedor,artesanal,emprendedor,3,buenos aires,9,centro-oriental,15,9,2017.0
-75,femenino,no,emprendedor,artesanal,emprendedor,4,boston,8,centro-oriental,15,9,2017.0
-53,masculino,si,emprendedor,artesanal,emprendedor,3,santa lucia,12,centro-oriental,15,9,2017.0
-52,masculino,no,emprendedor,artesanal,emprendedor,3,buenos aires urbanizacion los cerros,9,centro-oriental,15,9,2017.0
-63,masculino,si,emprendedor,artesanal,emprendedor,3,robledo,7,nor-occidental,15,9,2017.0
-66,masculino,si,emprendedor,artesanal,emprendedor,1,villatina los charcos,8,centro-oriental,15,9,2017.0
-65,masculino,si,emprendedor,artesanal,emprendedor,2,enciso final,8,centro-oriental,15,9,2017.0
-61,masculino,si,emprendedor,artesanal,emprendedor,4,santa monica #1,12,centro-oriental,15,9,2017.0
-58,masculino,si,emprendedor,artesanal,emprendedor,2,manrique - guadalupe,1,nor-oriental,15,9,2017.0
-49,masculino,si,emprendedor,artesanal,emprendedor,3,bombona,10,centro-oriental,15,9,2017.0
-63,masculino,si,emprendedor,artesanal,emprendedor,3,la ceja / reserva de san marcos,10,centro-oriental,15,9,2017.0
-58,femenino,si,emprendedor,artesanal,emprendedor,3,buenos aires,9,centro-oriental,15,9,2017.0
-56,masculino,si,emprendedor,artesanal,emprendedor,3,castilla,5,nor-occidental,15,9,2017.0
-45,femenino,si,emprendedor,artesanal,emprendedor,3,la america,12,centro-oriental,15,9,2017.0
-35,femenino,no,emprendedor,artesanal,emprendedor,2,moravia,4,nor-oriental,15,9,2017.0
-60,femenino,si,emprendedor,artesanal,emprendedor,3,robledo la pola,7,nor-occidental,15,9,2017.0
-54,femenino,no,emprendedor,artesanal,emprendedor,3,la america,12,centro-oriental,15,9,2017.0
-56,femenino,si,emprendedor,artesanal,emprendedor,3,sevilla,4,nor-oriental,15,9,2017.0
-56,femenino,si,emprendedor,artesanal,emprendedor,3,campovaldes,4,nor-oriental,15,9,2017.0
-59,masculino,si,emprendedor,artesanal,emprendedor,4,la america los pinos,12,centro-oriental,15,9,2017.0
-59,femenino,no,emprendedor,artesanal,emprendedor,3,buenos aires,9,centro-oriental,15,9,2017.0
-48,masculino,no,emprendedor,artesanal,emprendedor,2,enciso,8,centro-oriental,15,9,2017.0
-44,femenino,si,emprendedor,artesanal,emprendedor,2,robledo kenedy,7,nor-occidental,15,9,2017.0
-44,femenino,si,emprendedor,artesanal,emprendedor,2,santa cruz,2,nor-oriental,15,9,2017.0
-48,femenino,si,emprendedor,artesanal,emprendedor,1,popular 1,1,nor-oriental,15,9,2017.0
-34,femenino,si,emprendedor,artesanal,emprendedor,4,robledo altamira,7,nor-occidental,15,9,2017.0
-61,masculino,no,emprendedor,artesanal,emprendedor,2,corregimiento san cristobal,60,occidente,15,9,2017.0
-72,femenino,si,emprendedor,artesanal,emprendedor,3,santa monica,12,centro-oriental,15,9,2017.0
-43,femenino,no,emprendedor,artesanias,"ceramica, trabajo en madera, tejidos, puntillismo/ productos de linea hogar / cojines y todos los productos relacionados",1,otro,99-otro,otro,16,10,2018.0
-25,femenino,si,,artesanias,filigrana / plata accesorios,3,robledo,07-robledo,nor-occidental,17,10,2018.0
-51,femenino,si,emprendedor,basica,"artesano / atrapa sueños, cajas en mdf, libretas, cascadas",3,castilla,05-castilla,nor-occidental,17,10,2018.0
-51,femenino,si,emprendedor,artesanias,filigrana momposina / accesorios,3,robledo,07-robledo,nor-occidental,17,10,2018.0
-54,femenino,no,emprendedor,artesanias,"producto de tendecia / atrapasueño, accesorios en madera cuero y ceramica, etnicos",4,las mercedes,16-belen,sur-occidental,17,10,2018.0
-39,femenino,si,emprendedor,no_formal,"reciclando almas / de manera educativa concientizar a mis estudiantes de la conservacion del planeta mediante articulos reciclados: bolsos, lamparas, canastas",2,aranjuez,04-aranjuez,nor-oriental,17,10,2018.0
-58,femenino,no,emprendedor,artesanias,textil tejeduria,5,otro,99-otro,otro,17,10,2018.0
-45,masculino,si,emprendedor,artesanias,croche y macrame / manillas con hilo y bolsos con elementos reciclados,2,san javier no.1,13-san javier,centro-occidental,17,10,2018.0
-40,masculino,si,emprendedor,artesanias,"joyeria artesanal / inspirada en elementos de la naturaleza y figuras ancestrales. collares, aretes, anillos, pulseras, producto literario.",2,palmitas sector central,50-corregimiento de san sebastian de palmitas,nor-occidental,17,10,2018.0
-41,femenino,no,emprendedor,artesanias,bisoteria,4,otro,99-otro,otro,17,10,2018.0
-38,femenino,no,emprendedor,artesanias,"aluminio, vidrio y madera /",3,belen,16-belen,sur-occidental,17,10,2018.0
-48,femenino,,,,,,boyaca,05-castilla,nor-occidental,17,10,2018.0
-49,femenino,no,emprendedor,artesanias,"aluminio, cuadros en estuco, pesebres en estuco, tendidos en patchwork, cerámica",2,belen,16-belen,sur-occidental,17,10,2018.0
-64,femenino,si,empresaria,basica,arte,3,otro,99-otro,otro,17,10,2018.0
-57,femenino,no,emprendedor,artesanias,"tejeduria / chaquetones, ponchos, capas de verano, kimonos con mangas tejidas, chaquetas, faldas, cuellos bufandas y bufandas circular, ropa hogar",4,laureles,11-laureles estadio,centro-occidental,17,10,2018.0
-34,femenino,no,emprendedor,artesanias,"marroquineria / accesorios, bolsos",3,otro,99-otro,otro,17,10,2018.0
-58,masculino,si,empresaria,,"orfebrería, resina, flores inmortalizadas",3,campo valdes no.2,03-manrique,nor-oriental,17,10,2018.0
-49,femenino,no,emprendedor,artesanias,"tejeduria / lana, hilo, zapatos, ruanas, chalinas",3,robledo,07-robledo,nor-occidental,17,10,2018.0
-26,femenino,no,emprendedor,artesanias,bisoteria,3,la floresta,12-la américa,centro-occidental,17,10,2018.0
-72,femenino,no,empresaria,basica,orfebre / plata,5,el velodromo,11-laureles estadio,centro-occidental,17,10,2018.0
-51,femenino,no,emprendedor,artesanias,muñecas de trapo,5,estadio,11-laureles estadio,centro-occidental,17,10,2018.0
-37,femenino,,,,,,manrique central no.2,03-manrique,nor-oriental,17,10,2018.0
-24,femenino,no,emprendedor,artesanias,"bisuteria, agendas, carteras, empaques, percheros, porta lapiceros",3,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental,17,10,2018.0
-31,femenino,no,emprendedor,artesanias,tejeduria y bordado / zapatos bolsos,2,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental,17,10,2018.0
-29,femenino,,,artesanias,"croche , bolsos y accesorios en tejido",,laureles,11-laureles estadio,centro-occidental,17,10,2018.0
-24,masculino,no,emprendedor,artesanias,tejidos y manualidades,3,campo valdes no.2,03-manrique,nor-oriental,17,10,2018.0
-36,femenino,,,artesanias,"crochet, macrame, contry, oleo/articulos decorativos para el hogar",,carlos e. restrepo,05-castilla,nor-occidental,17,10,2018.0
-57,femenino,no,emprendedor,artesanias,"prospero: muñecos de trapo cocidos a mano / bisutería: collares, pulseras, aretas, llaveros. / arte de la filigrana con papel: tarjetas, pesebres",4,los colores,11-laureles estadio,centro-occidental,17,10,2018.0
-56,femenino,no,emprendedor,artesanias,lencería y decoración personalizada,2,aranjuez,04-aranjuez,nor-oriental,17,10,2018.0
-54,femenino,si,emprendedor,artesanias,arte en papel recuperado,4,belen,16-belen,sur-occidental,17,10,2018.0
-52,femenino,,,,"bisoteria y manualidades, tallerista",,otro,99-otro,otro,17,10,2018.0
-56,femenino,si,emprendedor,artesanias,"accesorios, lenceria / confeccion, artesanias hechas a mano",3,belen,16-belen,sur-occidental,17,10,2018.0
-48,femenino,si,emprendedor,artesanias,articulos en cuero ,2,boston,10-la candelaria,centro-oriental,17,10,2018.0
-48,femenino,no,emprendedor,artesanias,"versatilidad de un mismo accesorio en todo momento, tejidos en macrame y elaborados en bronce con baño de oro como aretes,pulseras, collares y anillos ",4,florida nueva,11-laureles estadio,centro-occidental,17,10,2018.0
-57,femenino,si,emprendedor,artesanias,"scrapbook como la técnica de personalizar diseños a través del papel, que permite revalorizar los recuerdos con papel. a través de diseños exclusivos y únicos aplicados a diferentes  temáticas. el scrapbook conecta la artesanía con los recuerdos, las vivencias y las emociones.",3,la loma de los bernal,16-belen,sur-occidental,17,10,2018.0
-57,femenino,,,artesanias,"manualidades, papel recuperado/botas y flores en botellas reciclables",,moravia,04-aranjuez,nor-oriental,17,10,2018.0
-53,femenino,,,,,,manrique central no.2,03-manrique,nor-oriental,17,10,2018.0
-57,femenino,,,,"pasword / tela, madera",,trinidad,15-guayabal,sur-occidental,17,10,2018.0
-52,femenino,,,,"cuero, tejido, croché, bordados, bolsos zapatos, tejidos y bordados",,belen,16-belen,sur-occidental,17,10,2018.0
-58,femenino,si,emprendedor,artesanias,"comercializar y enseñar/amigurumi, muñecas de tela, porcelanicron scrapbook,  arte quiteño.",,la america,12-la américa,centro-occidental,17,10,2018.0
-56,femenino,si,emprendedor,artesanias,"pinturas al oleo / tarjetas, individuales, muebles, productos decorativos",3,el pradito,60-corregimiento de san cristobal,nor-occidental,17,10,2018.0
-61,femenino,,,,"tejido y bordado sobre prendas / línea masculina de prendas, línea infantil, bolsos, accesorios",,belen,16-belen,sur-occidental,17,10,2018.0
-49,masculino,,,,"calicaturas, esculturas, pinturas",,boston,10-la candelaria,centro-oriental,17,10,2018.0
-35,femenino,,,,"scrapbook, bisoteria, manualidades / tarjeteria, empaques, albunes,  balacas, accesorios en bisoteria",,buenos aires,09-buenos aires,centro-oriental,17,10,2018.0
-48,femenino,no,emprendedor,artesanias,pinturas al oleo /,3,robledo,07-robledo,nor-occidental,17,10,2018.0
-51,femenino,si,empresaria,,"accesorios en cuero reciclado, diferentes tejidos ancestrales, semillas naturales y metales",2,santa monica,12-la américa,centro-occidental,17,10,2018.0
-45,femenino,si,emprendedor,artesanias,"necesidad y oportunidad / esculturas en hierro forjado, muebles y pinturas.",3,castilla,05-castilla,nor-occidental,17,10,2018.0
-34,femenino,si,emprendedor,artesanias,accesorios tejidos en mostacilla y macrame,3,otro,99-otro,otro,17,10,2018.0
-58,femenino,si,emprendedor,artesanias,"bisuteria / collares, llaveros, pulseras, aretas",3,buenos aires,09-buenos aires,centro-oriental,16,10,2018.0
-63,femenino,no,emprendedor,artesanias,bisuteria / con cascara de naranja,1,aranjuez,04-aranjuez,nor-oriental,16,10,2018.0
-26,femenino,no,empresaria,artesanias,"bisuteria y otros / cuadernos, libretas, bitacoras, separadores de libros, stickers, prints, almejas en bisuteria, tulas, camisetas.",2,robledo,07-robledo,nor-occidental,16,10,2018.0
-41,femenino,si,emprendedor,artesanias,bisuteria infantil,1,santa cruz,02-santa cruz,nor-oriental,16,10,2018.0
-57,femenino,no,emprendedor,artesanias,"decoración de botellas, arte country, diferentes técnicas de pintura",4,nueva villa del aburra,16-belen,sur-occidental,16,10,2018.0
-58,femenino,si,emprendedor,artesanias,"manualidades variado / pintura en madera, decoración de fiestas, navidad",3,robledo,07-robledo,nor-occidental,16,10,2018.0
-51,femenino,,emprendedor,artesanias,bisuteria/collares aretes pulseras,,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental,16,10,2018.0
-61,masculino,si,emprendedor,artesanias,fabricación de artículos decorativos y funcionales a partir de botellas de vidrio recuperadas.,4,belen,16-belen,sur-occidental,16,10,2018.0
-63,femenino,no,emprendedor,artesanias,"manualidades  varias: técnica de puntillismo, bordado en cinta, muñecos navideños, entre otros.",4,la floresta,12-la américa,centro-occidental,16,10,2018.0
-52,femenino,si,emprendedor,artesanias,"taller de bisuteria / collares, manillas, aretes, cinturones, llaveros",2,granizal,01-popular,nor-oriental,16,10,2018.0
-58,femenino,si,emprendedor,artesanias,tanto necesidad como oportunidad / lociones  zapatos crochet  bisuteria collares enbera peyote  busos ruanas gorros  etc.,3,boyaca las brisas,05-castilla,nor-occidental,16,10,2018.0
-39,femenino,no,empresaria,,bisuteria  artesanias,3,otro,99-otro,otro,16,10,2018.0
-21,femenino,,,,,,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental,16,10,2018.0
-63,masculino,,,,"talla en acrílico, recuperación de papel/cajas, pirámides, esferas, decoración",,san joaquin,11-laureles estadio,centro-occidental,16,10,2018.0
-63,femenino,si,,,"bordadora, artes manuales / tarjeteria, bordado en cinta, macrame, bisoteria, reciclaje en retaceria para decoración hogar y fiestas",3,calasanz,12-la américa,centro-occidental,16,10,2018.0
-48,femenino,si,empresaria,,"vitral / material y juegos didactico, velas de innovacion en oro plata bronce y piedra, chocolates, falto vitral",3,el rodeo,15-guayabal,sur-occidental,16,10,2018.0
-45,masculino,,,,talla y calado en madera,,otro,99-otro,otro,16,10,2018.0
-57,femenino,si,emprendedor,artesanias,tejeduria y bordado/accesorios crochet y collares con chaquiras,4,la castellana,11-laureles estadio,centro-occidental,16,10,2018.0
-38,femenino,no,emprendedor,artesanias,"pintura, acrilico y scrap",4,calasanz,12-la américa,centro-occidental,16,10,2018.0
-35,femenino,,,,,,guayabal,15-guayabal,sur-occidental,16,10,2018.0
-50,femenino,si,empresaria,,muñecas de trapo,2,manrique central no.2,03-manrique,nor-oriental,16,10,2018.0
-48,femenino,no,empresaria,,"cueros y terminados en semillas/diseño y fabricacion de bolsos, mochilas y morrales",4,otro,99-otro,otro,16,10,2018.0
-42,masculino,si,emprendedor,artesanias,bitacoras personalizadas,3,,,,16,10,2018.0
-50,masculino,no,emprendedor,artesanias,"lamina de aluminio repujada, algodón prensado y entretela / cuadros, figuras decorativas, imanes, accesorios",3,villa hermosa,08-villa hermosa,centro-oriental,16,10,2018.0
-52,femenino,si,empresaria,,"bisoteria / macrame, tobilleras",4,laureles,11-laureles estadio,centro-occidental,16,10,2018.0
-57,femenino,no,emprendedor,no formal,papel mache,4,calasanz,12-la américa,centro-occidental,16,10,2018.0
-61,masculino,no,emprendedor,artesanias,"inicialmente fue por necesidad de dar conocimiento y valor agregado a mi producto.  manualidades en cuero, por oportunidad, idea de negocio / productos: son diversos: correas, bolsos, diademas, manillas, aretes",3,belen,16-belen,sur-occidental,16,10,2018.0
-44,masculino,no,emprendedor,artesanias,madera y vidrio / lamparas,4,laureles,11-laureles estadio,centro-occidental,16,10,2018.0
-51,masculino,no,emprendedor,artesanias,"objetos decorativos trabajo en alambre, papel mache, porcelanicron / decoracion hogar",3,manrique central no.2,03-manrique,nor-oriental,16,10,2018.0
-46,femenino,si,emprendedor,artesanias,"bisuteria y tejidos / collare, bufandas, cofres,  tapetes, camandulas",3,villa hermosa,08-villa hermosa,centro-oriental,16,10,2018.0
-60,femenino,si,emprendedor,artesanias,"articulos en cuero / bolsos, monederos",2,manrique central no.2,03-manrique,nor-oriental,16,10,2018.0
-50,femenino,no,emprendedor,artesanias,"pinturas en oleo, ceramica y madera / bisoteria",4,la america,12-la américa,centro-occidental,16,10,2018.0
-59,femenino,no,emprendedor,artesanias,"tejeduria / bolsos, zapatos",2,robledo,07-robledo,nor-occidental,16,10,2018.0
-47,femenino,no,empresaria,,"ambas, tenia la necesidad de generar mis propios ingresos y encontre una oprtunidad de crear mi empresa con capital semilla / articulos decorativos para el hogar: porta calientes, porta vasos, porta retratos, cubiertos decorados con chaquiras, centros de mesa, lamparas, entre otros",4,san javier no.1,13-san javier,centro-occidental,16,10,2018.0
-63,femenino,no,emprendedor,artesanias,"subenir / lapiceros, recordatorios y productos emocionales en porcelanicron",3,pedregal,06-doce de octubre,nor-occidental,16,10,2018.0
-44,femenino,si,emprendedor,artesanias,"joyeria, fieltro / accesorios, llaveros en fieltro",4,belen,16-belen,sur-occidental,16,10,2018.0
-40,femenino,si,emprendedor,artesanias,"piedra murano / manillas, chaquiras",4,belen,16-belen,sur-occidental,16,10,2018.0
-60,masculino,si,emprendedor,artesanias,guarnecedor / cinturones fuera de serie,2,robledo,07-robledo,nor-occidental,16,10,2018.0
-38,femenino,no,emprendedor,artesanias,"artesanias en cuero  / marroquineria,repujado y pontado en cuero.",3,,,,16,10,2018.0
-65,femenino,,,,manualidades/muñequeria y decoracion de botellas,,el salvador,09-buenos aires,centro-oriental,16,10,2018.0
-61,femenino,si,emprendedor,artesanias,tambien se dedica al macrosector eductivo en educacion no formal   / bisoteria collares aretas,4,calasanz,12-la américa,centro-occidental,16,10,2018.0
-57,femenino,no,emprendedor,artesanias,"mosaico y reciclaje / articulos como percheros, decoracion de murales, reciclaje billeteras y porta pasaportesy juguetes",3,santa lucia,12-la américa,centro-occidental,16,10,2018.0
-,femenino,no,emprendedor,artesanias,"productos: joyería en plata, filigrana, peyote, bordados, talla en madera.",2,san jose la cima no.1,03-manrique,nor-oriental,16,10,2018.0
-52,femenino,si,emprendedor,artesanias,"calzado, artesanal. este tipo de calzado se puede elaborar para personas que presenta algunas patologías,  adjunto imágenes ",,san diego,10-la candelaria,centro-oriental,16,10,2018.0
-52,femenino,no,emprendedor,artesanias,"bordado / cojines, toallas, lencería",5,simon bolivar,12-la américa,centro-occidental,17,10,2018.0
-,femenino,no,emprendedor,artesanias,joyeria,4,la floresta,12-la américa,centro-occidental,17,10,2018.0
-,femenino,no,emprendedor,artesanias,bisoteria,3,san javier no.1,13-san javier,centro-occidental,17,10,2018.0
-,masculino,no,emprendedor,artesanias,sandalias de cuero,4,belen,16-belen,sur-occidental,17,10,2018.0
-,femenino,no,emprendedor,artesanias,artesanias en pañolencya / articulos decorativos hogar,5,belen,16-belen,sur-occidental,16,10,2018.0
-25,femenino,,,artesanias,"tejeduria / colchas, ponchos, manillas, bolsos, materas, cobijas",3,manrique oriental,03-manrique,nor-oriental,17,10,2018.0
-44,femenino,no,emprendedor,artesanias,"artesanal / vitrales, mosaicos y puntillismo",2,robledo,07-robledo,nor-occidental,17,10,2018.0
+edad,sexo,tipo_de_emprendimiento,idea_de_negocio,barrio_vereda_ciudadano,comuna_ciudadano,zona_ciudadano
+63.0,masculino,artesanal,emprendedor,robledo,7,nor-occidental
+56.0,masculino,artesanal,emprendedor,bombona,10,centro-oriental
+74.0,masculino,artesanal,emprendedor,guayabal,15,sur-oriental
+54.0,femenino,artesanal,emprendedor,america - santa monica #2,12,centro-oriental
+50.0,femenino,artesanal,emprendedor,america - santa monica #2,12,centro-oriental
+52.0,femenino,artesanal,emprendedor,san javier,13,centro-oriental
+27.0,femenino,artesanal,emprendedor,robledo,7,nor-occidental
+61.0,masculino,artesanal,emprendedor,campovaldes,4,nor-oriental
+43.0,femenino,artesanal,emprendedor,doce de octubre,6,nor-occidental
+39.0,femenino,artesanal,emprendedor,santa elena parte central,90,oriente
+44.0,masculino,artesanal,emprendedor,manrique,3,nor-oriental
+39.0,femenino,artesanal,emprendedor,manrique oriental,3,nor-oriental
+59.0,masculino,artesanal,emprendedor,aranjuez,4,nor-oriental
+53.0,femenino,artesanal,emprendedor,campovaldes,4,nor-oriental
+41.0,femenino,artesanal,emprendedor,unidad residencial la macarena - naranjal,11,centro-oriental
+51.0,masculino,artesanal,emprendedor,castilla,5,nor-occidental
+56.0,femenino,artesanal,emprendedor,santa elena,90,oriente
+36.0,masculino,artesanal,emprendedor,campovaldes,4,nor-oriental
+54.0,masculino,artesanal,emprendedor,castilla,5,nor-occidental
+32.0,femenino,artesanal,emprendedor,castilla,5,nor-occidental
+33.0,femenino,artesanal,emprendedor,ciudad del rio,14,sur-oriental
+56.0,femenino,artesanal,emprendedor,francisco antonio zea,5,nor-occidental
+69.0,femenino,artesanal,emprendedor,boston,8,centro-oriental
+45.0,femenino,artesanal,emprendedor,francisco antonio zea,5,nor-occidental
+52.0,femenino,artesanal,emprendedor,enciso,8,centro-oriental
+37.0,femenino,artesanal,emprendedor,corregimiento san cristobal,60,occidente
+52.0,femenino,artesanal,emprendedor,villahermosa,8,centro-oriental
+67.0,femenino,artesanal,emprendedor,calazanz,12,centro-oriental
+33.0,masculino,artesanal,emprendedor,francisco antonio zea,5,nor-occidental
+52.0,femenino,artesanal,emprendedor,manrique,3,nor-oriental
+37.0,masculino,artesanal,emprendedor,miraflorez,9,centro-oriental
+53.0,femenino,artesanal,emprendedor,colinas de enciso,8,centro-oriental
+53.0,femenino,artesanal,emprendedor,robledo,6,nor-occidental
+68.0,masculino,artesanal,emprendedor,simon bolivar,12,centro-oriental
+52.0,femenino,artesanal,emprendedor,corregimiento santa helena,90,oriente
+26.0,femenino,artesanal,emprendedor,poblado,14,sur-oriental
+40.0,femenino,artesanal,emprendedor,nuevo occidente san cristobal,60,occidente
+60.0,femenino,artesanal,emprendedor,san miguel,8,centro-oriental
+70.0,masculino,artesanal,emprendedor,floresta los alcazares,13,centro-oriental
+65.0,masculino,artesanal,emprendedor,villahermosa,8,centro-oriental
+42.0,masculino,artesanal,emprendedor,robledo,7,nor-occidental
+40.0,masculino,artesanal,emprendedor,sucre,10,centro-oriental
+72.0,femenino,artesanal,emprendedor,velodromo,11,centro-oriental
+34.0,masculino,artesanal,emprendedor,santa helena - vereda paisandú,90,oriente
+56.0,femenino,artesanal,emprendedor,belen san bernardo,16,sur-oriental
+57.0,masculino,artesanal,emprendedor,santa monica,12,centro-oriental
+37.0,femenino,artesanal,emprendedor,santa helena - el charrascal,90,oriente
+43.0,femenino,artesanal,emprendedor,campovaldes,4,nor-oriental
+63.0,femenino,artesanal,emprendedor,buenos aires,9,centro-oriental
+33.0,masculino,artesanal,emprendedor,caicedo sector la libertad,8,centro-oriental
+23.0,masculino,artesanal,emprendedor,niquitao,10,centro-oriental
+58.0,femenino,artesanal,emprendedor,villa mercedes colina de enciso,8,centro-oriental
+38.0,femenino,artesanal,emprendedor,centro,10,centro-oriental
+28.0,masculino,artesanal,emprendedor,laureles,11,centro-oriental
+62.0,femenino,artesanal,emprendedor,sucre parte alta,8,centro-oriental
+63.0,femenino,artesanal,emprendedor,robledo la campiña,7,nor-occidental
+64.0,femenino,artesanal,emprendedor,san antonio de prado,80,sur-occidental
+66.0,femenino,artesanal,emprendedor,san diego / terrazas de san diego,10,centro-oriental
+51.0,femenino,artesanal,emprendedor,salvador,9,centro-oriental
+57.0,femenino,artesanal,emprendedor,barrio las palmas,10,centro-oriental
+61.0,femenino,artesanal,emprendedor,calasanz,12,centro-oriental
+47.0,femenino,artesanal,emprendedor,san javier el departamento,13,centro-oriental
+55.0,masculino,artesanal,emprendedor,san antonio de prado vereda el vergel,80,sur-occidental
+34.0,masculino,artesanal,emprendedor,moravia,4,nor-oriental
+40.0,masculino,artesanal,emprendedor,aranjuez,4,nor-oriental
+65.0,femenino,artesanal,emprendedor,castilla,5,nor-occidental
+41.0,masculino,artesanal,emprendedor,buenos aires miraflorez,9,centro-oriental
+50.0,masculino,artesanal,emprendedor,belen rosales,16,sur-oriental
+60.0,femenino,artesanal,emprendedor,simon bolivar,12,centro-oriental
+45.0,masculino,artesanal,emprendedor,villahermosa,8,centro-oriental
+52.0,femenino,artesanal,emprendedor,la america,12,centro-oriental
+58.0,femenino,artesanal,emprendedor,naranjal,11,centro-oriental
+68.0,masculino,artesanal,emprendedor,buenos aires,9,centro-oriental
+75.0,femenino,artesanal,emprendedor,boston,8,centro-oriental
+53.0,masculino,artesanal,emprendedor,santa lucia,12,centro-oriental
+52.0,masculino,artesanal,emprendedor,buenos aires urbanizacion los cerros,9,centro-oriental
+63.0,masculino,artesanal,emprendedor,robledo,7,nor-occidental
+66.0,masculino,artesanal,emprendedor,villatina los charcos,8,centro-oriental
+65.0,masculino,artesanal,emprendedor,enciso final,8,centro-oriental
+61.0,masculino,artesanal,emprendedor,santa monica #1,12,centro-oriental
+58.0,masculino,artesanal,emprendedor,manrique - guadalupe,1,nor-oriental
+49.0,masculino,artesanal,emprendedor,bombona,10,centro-oriental
+63.0,masculino,artesanal,emprendedor,la ceja / reserva de san marcos,10,centro-oriental
+58.0,femenino,artesanal,emprendedor,buenos aires,9,centro-oriental
+56.0,masculino,artesanal,emprendedor,castilla,5,nor-occidental
+45.0,femenino,artesanal,emprendedor,la america,12,centro-oriental
+35.0,femenino,artesanal,emprendedor,moravia,4,nor-oriental
+60.0,femenino,artesanal,emprendedor,robledo la pola,7,nor-occidental
+54.0,femenino,artesanal,emprendedor,la america,12,centro-oriental
+56.0,femenino,artesanal,emprendedor,sevilla,4,nor-oriental
+56.0,femenino,artesanal,emprendedor,campovaldes,4,nor-oriental
+59.0,masculino,artesanal,emprendedor,la america los pinos,12,centro-oriental
+59.0,femenino,artesanal,emprendedor,buenos aires,9,centro-oriental
+48.0,masculino,artesanal,emprendedor,enciso,8,centro-oriental
+44.0,femenino,artesanal,emprendedor,robledo kenedy,7,nor-occidental
+44.0,femenino,artesanal,emprendedor,santa cruz,2,nor-oriental
+48.0,femenino,artesanal,emprendedor,popular 1,1,nor-oriental
+34.0,femenino,artesanal,emprendedor,robledo altamira,7,nor-occidental
+61.0,masculino,artesanal,emprendedor,corregimiento san cristobal,60,occidente
+72.0,femenino,artesanal,emprendedor,santa monica,12,centro-oriental
+43.0,femenino,artesanias,"ceramica, trabajo en madera, tejidos, puntillismo/ productos de linea hogar / cojines y todos los productos relacionados",otro,99-otro,otro
+25.0,femenino,artesanias,filigrana / plata accesorios,robledo,07-robledo,nor-occidental
+51.0,femenino,basica,"artesano / atrapa sueños, cajas en mdf, libretas, cascadas",castilla,05-castilla,nor-occidental
+51.0,femenino,artesanias,filigrana momposina / accesorios,robledo,07-robledo,nor-occidental
+54.0,femenino,artesanias,"producto de tendecia / atrapasueño, accesorios en madera cuero y ceramica, etnicos",las mercedes,16-belen,sur-occidental
+39.0,femenino,no_formal,"reciclando almas / de manera educativa concientizar a mis estudiantes de la conservacion del planeta mediante articulos reciclados: bolsos, lamparas, canastas",aranjuez,04-aranjuez,nor-oriental
+58.0,femenino,artesanias,textil tejeduria,otro,99-otro,otro
+45.0,masculino,artesanias,croche y macrame / manillas con hilo y bolsos con elementos reciclados,san javier no.1,13-san javier,centro-occidental
+40.0,masculino,artesanias,"joyeria artesanal / inspirada en elementos de la naturaleza y figuras ancestrales. collares, aretes, anillos, pulseras, producto literario.",palmitas sector central,50-corregimiento de san sebastian de palmitas,nor-occidental
+41.0,femenino,artesanias,bisoteria,otro,99-otro,otro
+38.0,femenino,artesanias,"aluminio, vidrio y madera /",belen,16-belen,sur-occidental
+48.0,femenino,,,boyaca,05-castilla,nor-occidental
+49.0,femenino,artesanias,"aluminio, cuadros en estuco, pesebres en estuco, tendidos en patchwork, cerámica",belen,16-belen,sur-occidental
+64.0,femenino,basica,arte,otro,99-otro,otro
+57.0,femenino,artesanias,"tejeduria / chaquetones, ponchos, capas de verano, kimonos con mangas tejidas, chaquetas, faldas, cuellos bufandas y bufandas circular, ropa hogar",laureles,11-laureles estadio,centro-occidental
+34.0,femenino,artesanias,"marroquineria / accesorios, bolsos",otro,99-otro,otro
+58.0,masculino,,"orfebrería, resina, flores inmortalizadas",campo valdes no.2,03-manrique,nor-oriental
+49.0,femenino,artesanias,"tejeduria / lana, hilo, zapatos, ruanas, chalinas",robledo,07-robledo,nor-occidental
+26.0,femenino,artesanias,bisoteria,la floresta,12-la américa,centro-occidental
+72.0,femenino,basica,orfebre / plata,el velodromo,11-laureles estadio,centro-occidental
+51.0,femenino,artesanias,muñecas de trapo,estadio,11-laureles estadio,centro-occidental
+37.0,femenino,,,manrique central no.2,03-manrique,nor-oriental
+24.0,femenino,artesanias,"bisuteria, agendas, carteras, empaques, percheros, porta lapiceros",san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental
+31.0,femenino,artesanias,tejeduria y bordado / zapatos bolsos,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental
+29.0,femenino,artesanias,"croche , bolsos y accesorios en tejido",laureles,11-laureles estadio,centro-occidental
+24.0,masculino,artesanias,tejidos y manualidades,campo valdes no.2,03-manrique,nor-oriental
+36.0,femenino,artesanias,"crochet, macrame, contry, oleo/articulos decorativos para el hogar",carlos e. restrepo,05-castilla,nor-occidental
+57.0,femenino,artesanias,"prospero: muñecos de trapo cocidos a mano / bisutería: collares, pulseras, aretas, llaveros. / arte de la filigrana con papel: tarjetas, pesebres",los colores,11-laureles estadio,centro-occidental
+56.0,femenino,artesanias,lencería y decoración personalizada,aranjuez,04-aranjuez,nor-oriental
+54.0,femenino,artesanias,arte en papel recuperado,belen,16-belen,sur-occidental
+52.0,femenino,,"bisoteria y manualidades, tallerista",otro,99-otro,otro
+56.0,femenino,artesanias,"accesorios, lenceria / confeccion, artesanias hechas a mano",belen,16-belen,sur-occidental
+48.0,femenino,artesanias,articulos en cuero ,boston,10-la candelaria,centro-oriental
+48.0,femenino,artesanias,"versatilidad de un mismo accesorio en todo momento, tejidos en macrame y elaborados en bronce con baño de oro como aretes,pulseras, collares y anillos ",florida nueva,11-laureles estadio,centro-occidental
+57.0,femenino,artesanias,"scrapbook como la técnica de personalizar diseños a través del papel, que permite revalorizar los recuerdos con papel. a través de diseños exclusivos y únicos aplicados a diferentes  temáticas. el scrapbook conecta la artesanía con los recuerdos, las vivencias y las emociones.",la loma de los bernal,16-belen,sur-occidental
+57.0,femenino,artesanias,"manualidades, papel recuperado/botas y flores en botellas reciclables",moravia,04-aranjuez,nor-oriental
+53.0,femenino,,,manrique central no.2,03-manrique,nor-oriental
+57.0,femenino,,"pasword / tela, madera",trinidad,15-guayabal,sur-occidental
+52.0,femenino,,"cuero, tejido, croché, bordados, bolsos zapatos, tejidos y bordados",belen,16-belen,sur-occidental
+58.0,femenino,artesanias,"comercializar y enseñar/amigurumi, muñecas de tela, porcelanicron scrapbook,  arte quiteño.",la america,12-la américa,centro-occidental
+56.0,femenino,artesanias,"pinturas al oleo / tarjetas, individuales, muebles, productos decorativos",el pradito,60-corregimiento de san cristobal,nor-occidental
+61.0,femenino,,"tejido y bordado sobre prendas / línea masculina de prendas, línea infantil, bolsos, accesorios",belen,16-belen,sur-occidental
+49.0,masculino,,"calicaturas, esculturas, pinturas",boston,10-la candelaria,centro-oriental
+35.0,femenino,,"scrapbook, bisoteria, manualidades / tarjeteria, empaques, albunes,  balacas, accesorios en bisoteria",buenos aires,09-buenos aires,centro-oriental
+48.0,femenino,artesanias,pinturas al oleo /,robledo,07-robledo,nor-occidental
+51.0,femenino,,"accesorios en cuero reciclado, diferentes tejidos ancestrales, semillas naturales y metales",santa monica,12-la américa,centro-occidental
+45.0,femenino,artesanias,"necesidad y oportunidad / esculturas en hierro forjado, muebles y pinturas.",castilla,05-castilla,nor-occidental
+34.0,femenino,artesanias,accesorios tejidos en mostacilla y macrame,otro,99-otro,otro
+58.0,femenino,artesanias,"bisuteria / collares, llaveros, pulseras, aretas",buenos aires,09-buenos aires,centro-oriental
+63.0,femenino,artesanias,bisuteria / con cascara de naranja,aranjuez,04-aranjuez,nor-oriental
+26.0,femenino,artesanias,"bisuteria y otros / cuadernos, libretas, bitacoras, separadores de libros, stickers, prints, almejas en bisuteria, tulas, camisetas.",robledo,07-robledo,nor-occidental
+41.0,femenino,artesanias,bisuteria infantil,santa cruz,02-santa cruz,nor-oriental
+57.0,femenino,artesanias,"decoración de botellas, arte country, diferentes técnicas de pintura",nueva villa del aburra,16-belen,sur-occidental
+58.0,femenino,artesanias,"manualidades variado / pintura en madera, decoración de fiestas, navidad",robledo,07-robledo,nor-occidental
+51.0,femenino,artesanias,bisuteria/collares aretes pulseras,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental
+61.0,masculino,artesanias,fabricación de artículos decorativos y funcionales a partir de botellas de vidrio recuperadas.,belen,16-belen,sur-occidental
+63.0,femenino,artesanias,"manualidades  varias: técnica de puntillismo, bordado en cinta, muñecos navideños, entre otros.",la floresta,12-la américa,centro-occidental
+52.0,femenino,artesanias,"taller de bisuteria / collares, manillas, aretes, cinturones, llaveros",granizal,01-popular,nor-oriental
+58.0,femenino,artesanias,tanto necesidad como oportunidad / lociones  zapatos crochet  bisuteria collares enbera peyote  busos ruanas gorros  etc.,boyaca las brisas,05-castilla,nor-occidental
+39.0,femenino,,bisuteria  artesanias,otro,99-otro,otro
+21.0,femenino,,,san antonio de prado,80-corregimiento de san antonio de prado,sur-occidental
+63.0,masculino,,"talla en acrílico, recuperación de papel/cajas, pirámides, esferas, decoración",san joaquin,11-laureles estadio,centro-occidental
+63.0,femenino,,"bordadora, artes manuales / tarjeteria, bordado en cinta, macrame, bisoteria, reciclaje en retaceria para decoración hogar y fiestas",calasanz,12-la américa,centro-occidental
+48.0,femenino,,"vitral / material y juegos didactico, velas de innovacion en oro plata bronce y piedra, chocolates, falto vitral",el rodeo,15-guayabal,sur-occidental
+45.0,masculino,,talla y calado en madera,otro,99-otro,otro
+57.0,femenino,artesanias,tejeduria y bordado/accesorios crochet y collares con chaquiras,la castellana,11-laureles estadio,centro-occidental
+38.0,femenino,artesanias,"pintura, acrilico y scrap",calasanz,12-la américa,centro-occidental
+35.0,femenino,,,guayabal,15-guayabal,sur-occidental
+50.0,femenino,,muñecas de trapo,manrique central no.2,03-manrique,nor-oriental
+48.0,femenino,,"cueros y terminados en semillas/diseño y fabricacion de bolsos, mochilas y morrales",otro,99-otro,otro
+42.0,masculino,artesanias,bitacoras personalizadas,,,
+50.0,masculino,artesanias,"lamina de aluminio repujada, algodón prensado y entretela / cuadros, figuras decorativas, imanes, accesorios",villa hermosa,08-villa hermosa,centro-oriental
+52.0,femenino,,"bisoteria / macrame, tobilleras",laureles,11-laureles estadio,centro-occidental
+57.0,femenino,no formal,papel mache,calasanz,12-la américa,centro-occidental
+61.0,masculino,artesanias,"inicialmente fue por necesidad de dar conocimiento y valor agregado a mi producto.  manualidades en cuero, por oportunidad, idea de negocio / productos: son diversos: correas, bolsos, diademas, manillas, aretes",belen,16-belen,sur-occidental
+44.0,masculino,artesanias,madera y vidrio / lamparas,laureles,11-laureles estadio,centro-occidental
+51.0,masculino,artesanias,"objetos decorativos trabajo en alambre, papel mache, porcelanicron / decoracion hogar",manrique central no.2,03-manrique,nor-oriental
+46.0,femenino,artesanias,"bisuteria y tejidos / collare, bufandas, cofres,  tapetes, camandulas",villa hermosa,08-villa hermosa,centro-oriental
+60.0,femenino,artesanias,"articulos en cuero / bolsos, monederos",manrique central no.2,03-manrique,nor-oriental
+50.0,femenino,artesanias,"pinturas en oleo, ceramica y madera / bisoteria",la america,12-la américa,centro-occidental
+59.0,femenino,artesanias,"tejeduria / bolsos, zapatos",robledo,07-robledo,nor-occidental
+47.0,femenino,,"ambas, tenia la necesidad de generar mis propios ingresos y encontre una oprtunidad de crear mi empresa con capital semilla / articulos decorativos para el hogar: porta calientes, porta vasos, porta retratos, cubiertos decorados con chaquiras, centros de mesa, lamparas, entre otros",san javier no.1,13-san javier,centro-occidental
+63.0,femenino,artesanias,"subenir / lapiceros, recordatorios y productos emocionales en porcelanicron",pedregal,06-doce de octubre,nor-occidental
+44.0,femenino,artesanias,"joyeria, fieltro / accesorios, llaveros en fieltro",belen,16-belen,sur-occidental
+40.0,femenino,artesanias,"piedra murano / manillas, chaquiras",belen,16-belen,sur-occidental
+60.0,masculino,artesanias,guarnecedor / cinturones fuera de serie,robledo,07-robledo,nor-occidental
+38.0,femenino,artesanias,"artesanias en cuero  / marroquineria,repujado y pontado en cuero.",,,
+65.0,femenino,,manualidades/muñequeria y decoracion de botellas,el salvador,09-buenos aires,centro-oriental
+61.0,femenino,artesanias,tambien se dedica al macrosector eductivo en educacion no formal   / bisoteria collares aretas,calasanz,12-la américa,centro-occidental
+57.0,femenino,artesanias,"mosaico y reciclaje / articulos como percheros, decoracion de murales, reciclaje billeteras y porta pasaportesy juguetes",santa lucia,12-la américa,centro-occidental
+,femenino,artesanias,"productos: joyería en plata, filigrana, peyote, bordados, talla en madera.",san jose la cima no.1,03-manrique,nor-oriental
+52.0,femenino,artesanias,"calzado, artesanal. este tipo de calzado se puede elaborar para personas que presenta algunas patologías,  adjunto imágenes ",san diego,10-la candelaria,centro-oriental
+52.0,femenino,artesanias,"bordado / cojines, toallas, lencería",simon bolivar,12-la américa,centro-occidental
+,femenino,artesanias,joyeria,la floresta,12-la américa,centro-occidental
+,femenino,artesanias,bisoteria,san javier no.1,13-san javier,centro-occidental
+,masculino,artesanias,sandalias de cuero,belen,16-belen,sur-occidental
+,femenino,artesanias,artesanias en pañolencya / articulos decorativos hogar,belen,16-belen,sur-occidental
+25.0,femenino,artesanias,"tejeduria / colchas, ponchos, manillas, bolsos, materas, cobijas",manrique oriental,03-manrique,nor-oriental
+44.0,femenino,artesanias,"artesanal / vitrales, mosaicos y puntillismo",robledo,07-robledo,nor-occidental
