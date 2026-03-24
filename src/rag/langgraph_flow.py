@@ -511,40 +511,48 @@ def construir_contexto(state: MedCityState) -> MedCityState:
 # Prompts específicos por intención
 _PROMPTS_POR_INTENT = {
     "caracterizar_zona": (
-        "TAREA: Describe la zona de forma clara y sencilla. Incluye:\n"
-        "- Cuántos emprendedores hay y de qué tipo\n"
-        "- Si hay WiFi público y cuánta gente lo usa\n"
+        "TAREA: Describe la zona de forma completa pero sencilla. Incluye:\n"
+        "- Total de emprendedores (artesanos + microempresarios creditados, SIEMPRE suma ambos)\n"
+        "- Desglose: cuántos son artesanos y cuántos tienen crédito\n"
+        "- Qué tipos de negocio hay (artesanales Y actividades financiadas)\n"
+        "- Si hay WiFi público: cuánta gente lo usa y de qué edad\n"
         "- Quién emprende ahí (edad, género, estrato)\n"
-        "- Si hay créditos disponibles o no (cuántos y por cuánta plata)\n"
-        "- Si es buena zona para emprender o ya hay mucha competencia\n"
-        "- Qué se puede hacer ahí (consejo práctico)\n"
-        "Si no hay WiFi en el barrio, menciónalo. Sé directo y breve."
+        "- Créditos: cuántos se han dado, por cuánta plata, a qué actividades\n"
+        "- ¿Es buena zona para emprender? ¿Hay mucha o poca competencia?\n"
+        "- Un consejo práctico basado en todo lo anterior\n"
+        "Si no hay WiFi en el barrio, menciónalo."
     ),
     "encontrar_oportunidad": (
-        "TAREA: Muestra las mejores zonas para emprender, explicado de forma sencilla:\n"
+        "TAREA: Analiza las oportunidades de emprendimiento comparando zonas:\n"
+        "- Para cada zona menciona el TOTAL de emprendedores (artesanos + creditados)\n"
         "- Dónde hay mucha gente pero pocos negocios (oportunidad)\n"
-        "- Dónde ya hay demasiados negocios iguales (cuidado, mucha competencia)\n"
-        "- Dónde faltan créditos para los emprendedores\n"
-        "Ordena de mejor a peor oportunidad. Da cifras concretas y un consejo práctico."
+        "- Dónde ya hay demasiada competencia\n"
+        "- Dónde hay créditos disponibles y dónde no\n"
+        "- Compara al menos 3-5 zonas con cifras concretas\n"
+        "Ordena de mejor a peor oportunidad y cierra con un consejo práctico."
     ),
     "recomendar_negocio": (
         "TAREA: Recomienda 3 negocios para la zona. Para cada uno explica:\n"
-        "- Qué negocio montar\n"
-        "- Por qué funcionaría ahí (en 1-2 frases simples con datos)\n"
+        "- Qué negocio montar y por qué funcionaría ahí\n"
+        "- Basado en: perfil de la gente, competencia actual (total emprendedores), créditos disponibles\n"
         "Al final, di cuál es la mejor opción y por qué."
     ),
     "comparar_zonas": (
-        "TAREA: Compara las zonas y di cuál es mejor para emprender.\n"
-        "Para cada zona menciona: cuántos negocios hay, cuánta gente pasa, "
-        "y si hay créditos disponibles. Ordena de mejor a peor. "
-        "Cierra con una recomendación clara."
+        "TAREA: Compara las zonas con datos completos:\n"
+        "- Total de emprendedores por zona (artesanos + microemp. creditados)\n"
+        "- Cuánta gente pasa (tráfico WiFi)\n"
+        "- Créditos otorgados y montos\n"
+        "- Nivel de competencia en cada zona\n"
+        "Ordena de mejor a peor para emprender. Cierra con recomendación."
     ),
     "general": (
         "TAREA: Responde la pregunta con los datos disponibles.\n"
-        "Da cifras exactas del contexto. Si se pregunta por totales, incluye TODOS los datos "
-        "que aparecen. Si hay distribución por barrio, muéstrala completa.\n"
+        "IMPORTANTE: Cuando hables de emprendedores, SIEMPRE suma artesanos + microempresarios creditados.\n"
+        "Da el total Y el desglose (ej: '294 emprendedores: 7 artesanos y 287 con crédito').\n"
+        "Si se pregunta por totales, incluye TODOS los datos que aparecen.\n"
+        "Si hay distribución por barrio, muéstrala completa.\n"
         "Si no tienes el dato, di 'No tenemos ese dato en nuestra base'.\n"
-        "IMPORTANTE: Usa el documento global para dar cifras totales de toda la ciudad."
+        "Usa el documento global para dar cifras totales de toda la ciudad."
     ),
 }
 
@@ -564,20 +572,22 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
     tarea = _PROMPTS_POR_INTENT.get(intent, _PROMPTS_POR_INTENT["general"])
 
     formato_respuesta = (
-        "Responde en MÁXIMO 8-10 líneas. Estructura:\n"
-        "1) Respuesta directa (1-2 frases con cifras)\n"
-        "2) Qué hacer con eso (1 consejo práctico)\n"
-        f"3) Fuente: Datos Medata Medellín — {sources_str}"
+        "Responde en 10-15 líneas. Estructura:\n"
+        "1) Respuesta directa con cifras TOTALES (artesanos + creditados)\n"
+        "2) Desglose: cuántos de cada tipo y qué hacen\n"
+        "3) Contexto relevante (WiFi, créditos, competencia)\n"
+        "4) Qué hacer con eso (consejo práctico)\n"
+        f"5) Fuente: Datos Medata Medellín — {sources_str}"
     )
 
     if intent == "recomendar_negocio":
         formato_respuesta = (
-            "Responde en MÁXIMO 15 líneas. Estructura:\n"
-            "1) Cómo es la zona (2 frases)\n"
-            "2) Negocio 1: nombre + por qué (1-2 frases)\n"
-            "3) Negocio 2: nombre + por qué (1-2 frases)\n"
-            "4) Negocio 3: nombre + por qué (1-2 frases)\n"
-            "5) Cuál elegir primero (1 frase)\n"
+            "Responde en 15-20 líneas. Estructura:\n"
+            "1) Cómo es la zona: total emprendedores (desglose), tráfico, créditos\n"
+            "2) Negocio 1: nombre + por qué (con datos)\n"
+            "3) Negocio 2: nombre + por qué (con datos)\n"
+            "4) Negocio 3: nombre + por qué (con datos)\n"
+            "5) Cuál elegir primero y por qué\n"
             f"6) Fuente: Datos Medata Medellín — {sources_str}"
         )
 
@@ -588,10 +598,11 @@ def sintetizar_respuesta(state: MedCityState) -> MedCityState:
         "- Usa lenguaje sencillo, como si hablaras con alguien que NO es experto en datos.\n"
         "- NO uses términos técnicos como 'mismatch demográfico', 'ratio', 'score', 'cuadrante', 'densidad emprendedora', 'índice de diversificación'.\n"
         "  En su lugar di cosas como: 'hay poca competencia', 'mucha gente pasa por ahí', 'buena oportunidad'.\n"
-        "- Sé BREVE y DIRECTO. Ve al grano.\n"
         "- NO inventes datos. Usa SOLO lo que está en el contexto.\n"
         "- Si no tienes un dato, di 'No tenemos ese dato'.\n"
-        "- Incluye cifras reales (ejemplo: '197 emprendedores', '$500,000 en créditos').\n"
+        "- Incluye cifras reales (ejemplo: '294 emprendedores', '$500,000 en créditos').\n"
+        "- REGLA DE TOTALES: Cuando el contexto tenga 'artesanos' y 'microemp. creditados', SIEMPRE da el total sumado Y el desglose. Nunca des solo uno de los dos.\n"
+        "- Da respuestas COMPLETAS: no solo la cifra, explica qué significa y qué puede hacer el emprendedor con esa info.\n"
         "- Cierra siempre con un consejo práctico.\n"
         "- Si no hay datos directos de la zona, usa zonas cercanas y acláralo.\n\n"
         f"{tarea}\n\n"
