@@ -83,7 +83,8 @@ class MedCityState(TypedDict, total=False):
     """Estado compartido entre todos los nodos del grafo."""
     user_query: str
     intent: Intent
-    zone: str               # barrio o comuna extraído de la pregunta
+    zone: str               # barrio o comuna principal extraído
+    zones: List[str]         # múltiples zonas para comparaciones
     zone_type: str           # "barrio" | "comuna" | "general"
     tipo_negocio: str        # tipo de negocio mencionado por el usuario
     info_completa: bool      # si tenemos suficiente info para responder
@@ -134,6 +135,7 @@ def router_intencion(state: MedCityState) -> MedCityState:
         "cuales barrios", "cuales comunas", "comparar", "ranking",
         "top barrios", "top comunas", "mejores barrios", "mejores zonas",
         "mas trafico pero menos", "listado de",
+        "diferencia entre", "versus", " vs ",
     ]
     kw_caracterizar = [
         "caracter", "perfil", "como es", "datos de", "informacion de",
@@ -188,45 +190,55 @@ def router_intencion(state: MedCityState) -> MedCityState:
 
 def extraer_entidades(state: MedCityState) -> MedCityState:
     """
-    Extrae zona (barrio/comuna) y tipo_negocio del texto del usuario.
-      - Caracterizar → necesita zona
-      - Oportunidad  → puede tener tipo_negocio
-      - Recomendar   → necesita zona
+    Extrae zona(s) y tipo_negocio del texto del usuario.
+    Si encuentra múltiples zonas, las guarda en 'zones' y fuerza comparar_zonas.
     """
     q = _normalize(state.get("user_query", ""))
     zone = state.get("zone", "")
     zone_type = "general"
     tipo_negocio = ""
+    zones: List[str] = []
+    intent = state.get("intent", "general")
 
-    # ── Extraer zona ──
+    # ── Extraer TODAS las zonas mencionadas ──
     if not zone:
-        # Barrios (match más largo primero)
+        # Barrios (match más largo primero para evitar parciales)
         for barrio in sorted(_BARRIOS_CONOCIDOS, key=len, reverse=True):
             if barrio in q:
-                zone = barrio
-                zone_type = "barrio"
-                break
+                # Evitar que un barrio ya capturado sea substring de otro
+                already_covered = any(barrio in z and barrio != z for z in zones)
+                if not already_covered:
+                    zones.append(barrio)
 
         # Comunas por número
-        if not zone:
-            m = re.search(r"comuna\s*(\d{1,2})", q)
-            if m:
-                cnum = m.group(1)
-                zone = _COMUNAS_CONOCIDAS.get(cnum, f"comuna {cnum}")
-                zone_type = "comuna"
+        for m in re.finditer(r"comuna\s*(\d{1,2})", q):
+            cnum = m.group(1)
+            cname = _COMUNAS_CONOCIDAS.get(cnum, f"comuna {cnum}")
+            if cname not in zones:
+                zones.append(cname)
 
         # Comunas por nombre
-        if not zone:
+        if not zones:
             for _cnum, cname in sorted(
                 _COMUNAS_CONOCIDAS.items(), key=lambda x: len(x[1]), reverse=True
             ):
-                if cname in q:
-                    zone = cname
-                    zone_type = "comuna"
-                    break
+                if cname in q and cname not in zones:
+                    zones.append(cname)
+
+        if zones:
+            zone = zones[0]
+            zone_type = "barrio"
+            # Verificar si es comuna
+            if zone in _COMUNAS_CONOCIDAS.values():
+                zone_type = "comuna"
     else:
         zone = _normalize(zone)
+        zones = [zone]
         zone_type = "barrio"
+
+    # Si hay múltiples zonas → forzar comparar_zonas
+    if len(zones) > 1 and intent != "comparar_zonas":
+        intent = "comparar_zonas"
 
     # ── Extraer tipo de negocio ──
     for tipo in _TIPOS_NEGOCIO:
@@ -234,9 +246,16 @@ def extraer_entidades(state: MedCityState) -> MedCityState:
             tipo_negocio = tipo
             break
 
-    print(f"  [entidades] Zona: '{zone or 'general'}' ({zone_type})"
+    zones_str = ", ".join(zones) if zones else "general"
+    print(f"  [entidades] Zonas: [{zones_str}] ({zone_type})"
           f" | Negocio: '{tipo_negocio or 'no especificado'}'")
-    return {"zone": zone, "zone_type": zone_type, "tipo_negocio": tipo_negocio}
+    return {
+        "zone": zone,
+        "zones": zones,
+        "zone_type": zone_type,
+        "tipo_negocio": tipo_negocio,
+        "intent": intent,
+    }
 
 
 # ── NODO 3: Validar información ─────────────────────────────────────────────
@@ -304,17 +323,25 @@ def pedir_info(state: MedCityState) -> MedCityState:
 def construir_query_rag(state: MedCityState) -> MedCityState:
     """
     Construye query semántica optimizada para Pinecone.
-    Templates por intención para mejor retrieval.
+    Para comparaciones con múltiples zonas, construye query que incluya todas.
     """
     intent = state.get("intent", "general")
     zone = state.get("zone", "")
+    zones = state.get("zones", [])
     zone_type = state.get("zone_type", "general")
     tipo_negocio = state.get("tipo_negocio", "")
     user_q = state.get("user_query", "")
 
     n_results = 5
 
-    if zone and zone_type == "barrio":
+    # Comparar zonas con múltiples zonas explícitas
+    if intent == "comparar_zonas" and len(zones) > 1:
+        zones_text = " ".join(f"BARRIO: {z}" for z in zones)
+        rag_q = (f"{zones_text} comparar emprendimientos tráfico WiFi "
+                 f"créditos oportunidad perfil")
+        n_results = max(len(zones) + 2, 8)
+
+    elif zone and zone_type == "barrio" and intent != "comparar_zonas":
         base = f"BARRIO: {zone}"
         if intent == "caracterizar_zona":
             rag_q = (f"{base} perfil consumidor tráfico WiFi emprendimientos "
@@ -364,33 +391,53 @@ def construir_query_rag(state: MedCityState) -> MedCityState:
 
 def recuperar_datos(state: MedCityState) -> MedCityState:
     """
-    Recupera documentos de Pinecone con filtro por zona cuando aplica.
-    Para comparaciones/rankings, recupera sin filtro para obtener múltiples zonas.
+    Recupera documentos de Pinecone.
+    Para comparaciones con múltiples zonas, busca cada zona individualmente.
     """
     rag_q = state.get("rag_query", state.get("user_query", ""))
     n_results = state.get("n_results", 5)
     zone = state.get("zone", "")
+    zones = state.get("zones", [])
     zone_type = state.get("zone_type", "general")
     intent = state.get("intent", "general")
 
-    # Filtro por metadata solo para consultas de zona específica
-    # Para comparaciones y oportunidades sin zona, necesitamos múltiples docs
-    where_filter = None
-    if zone and zone_type in ("barrio", "comuna") and intent not in ("comparar_zonas",):
-        where_filter = {"zone": zone}
+    items: list = []
 
-    try:
-        items = retrieve_rag_context(rag_q, n_results=n_results, where=where_filter)
-        # Si el filtro retorna vacío, reintentar sin filtro
-        if not items and where_filter:
-            print(f"  [recuperar] Sin resultados con filtro zone={zone}, buscando sin filtro...")
-            items = retrieve_rag_context(rag_q, n_results=n_results)
-    except Exception:
+    # Comparaciones con múltiples zonas: buscar cada una por separado
+    if intent == "comparar_zonas" and len(zones) > 1:
+        for z in zones:
+            try:
+                zone_items = retrieve_rag_context(
+                    f"BARRIO: {z} emprendimientos tráfico créditos",
+                    n_results=2,
+                    where={"zone": z},
+                )
+                if not zone_items:
+                    # Reintentar sin filtro
+                    zone_items = retrieve_rag_context(
+                        f"BARRIO: {z} emprendimientos", n_results=1,
+                    )
+                items.extend(zone_items)
+                print(f"  [recuperar] Zona '{z}': {len(zone_items)} docs")
+            except Exception as e:
+                print(f"  [recuperar] Error buscando '{z}': {e}")
+    else:
+        # Búsqueda normal (zona única o sin zona)
+        where_filter = None
+        if zone and zone_type in ("barrio", "comuna") and intent not in ("comparar_zonas",):
+            where_filter = {"zone": zone}
+
         try:
-            items = retrieve_rag_context(rag_q, n_results=n_results)
-        except Exception as e:
-            print(f"  [recuperar] ERROR: {e}")
-            items = []
+            items = retrieve_rag_context(rag_q, n_results=n_results, where=where_filter)
+            if not items and where_filter:
+                print(f"  [recuperar] Sin resultados con filtro zone={zone}, buscando sin filtro...")
+                items = retrieve_rag_context(rag_q, n_results=n_results)
+        except Exception:
+            try:
+                items = retrieve_rag_context(rag_q, n_results=n_results)
+            except Exception as e:
+                print(f"  [recuperar] ERROR: {e}")
+                items = []
 
     # Para comparaciones, oportunidades y consultas generales, también traer el doc global
     if intent in ("comparar_zonas", "encontrar_oportunidad", "general") or state.get("_is_city_level"):
