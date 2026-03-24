@@ -1,0 +1,22 @@
+barrio_norm,n_sedes,total_registros,media_registros_sede,max_registros_sede,comuna,total_usuarios,rango_edad_dominante,dispositivo_dominante,ratio_smartphone_pc,perfil_consumidor
+la candelaria,15,931606.77,6509.1,24298.0,10.0,218818,De 18 a 28 Años,Smartphone,76.26,digital-movil
+aranjuez,11,800757.3,7621.9,26441.0,4.0,221088,De 18 a 28 Años,Smartphone,112.02,digital-movil
+castilla,10,662708.316,6438.7,34600.0,5.0,282425,De 18 a 28 Años,Smartphone,82.45,digital-movil
+manrique,9,563121.0,5367.2,17718.0,3.0,157174,De 18 a 28 Años,Smartphone,80.6,digital-movil
+guayabal,9,530633.998,5516.8,40461.0,15.0,164488,De 18 a 28 Años,Smartphone,85.39,digital-movil
+san javier,14,519143.0,3847.5,13283.0,13.0,171286,De 18 a 28 Años,Smartphone,68.58,digital-movil
+popular,8,501580.0,6251.0,20375.0,1.0,100231,De 18 a 28 Años,Smartphone,54.26,digital-movil
+laureles estadio,16,479588.0,2860.6,10099.0,11.0,138764,De 18 a 28 Años,Smartphone,61.88,digital-movil
+doce de octubre,10,358253.0,4178.9,13045.0,6.0,121954,De 18 a 28 Años,Smartphone,84.53,digital-movil
+san cristóbal,6,350589.23600000003,5611.6,18223.0,60.0,86596,De 18 a 28 Años,Smartphone,56.17,digital-movil
+belén,10,346681.0,4507.2,25459.0,16.0,107148,De 18 a 28 Años,Smartphone,124.41,digital-movil
+buenos aires,6,317609.0,5060.1,16864.0,9.0,94069,De 18 a 28 Años,Smartphone,121.66,digital-movil
+santa elena,5,256025.263,4411.0,13836.44,90.0,39559,De 18 a 28 Años,Smartphone,55.05,digital-movil
+altavista,7,246010.0,3688.3,8715.0,70.0,74538,De 18 a 28 Años,Smartphone,28.53,digital-movil
+el poblado,5,226715.709,5429.1,22922.0,14.0,47664,De 18 a 28 Años,Smartphone,94.98,digital-movil
+santa cruz,7,221343.0,3854.4,9416.0,2.0,81861,De 18 a 28 Años,Smartphone,59.38,digital-movil
+la américa,11,209253.0,2513.7,14096.0,12.0,61228,De 18 a 28 Años,Smartphone,27.37,digital-movil
+villa hermosa,7,195996.0,3919.7,12520.0,8.0,65830,De 18 a 28 Años,Smartphone,86.7,digital-movil
+san antonio de prado,3,81643.0,2749.5,12574.0,80.0,30605,De 18 a 28 Años,Smartphone,62.55,digital-movil
+san sebastián de palmitas,3,77157.306,2675.0,12839.306,50.0,10908,De 29 a 50 Años,Smartphone,16.04,digital-movil
+robledo,5,57499.0,1807.3,5430.0,7.0,20187,De 18 a 28 Años,Smartphone,120.87,digital-movil
