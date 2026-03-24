@@ -267,7 +267,7 @@ def validar_info(state: MedCityState) -> MedCityState:
 
     Reglas:
     - caracterizar_zona  → REQUIERE zona
-    - recomendar_negocio → REQUIERE zona
+    - recomendar_negocio → puede funcionar sin zona (recomienda mejores zonas)
     - encontrar_oportunidad → puede funcionar sin zona (ranking global)
     - comparar_zonas → puede funcionar sin zona (ranking global)
     - general → siempre ok
@@ -283,11 +283,6 @@ def validar_info(state: MedCityState) -> MedCityState:
             "¿En qué barrio o comuna te gustaría conocer los indicadores? "
             "Puedo darte datos de: Aranjuez, Castilla, Belén, Robledo, San Javier, "
             "La Candelaria, Popular, El Poblado, entre otros."
-        )
-    elif intent == "recomendar_negocio" and not zone:
-        pregunta = (
-            "¿En qué zona quieres ubicarte? Dime el barrio o comuna y te doy "
-            "los top 3 rubros recomendados según el perfil de consumidores de la zona."
         )
     elif intent == "encontrar_oportunidad" and tipo_negocio:
         # Si ya tiene tipo de negocio, no necesita más info
@@ -375,9 +370,11 @@ def construir_query_rag(state: MedCityState) -> MedCityState:
         n_results = 10
 
     elif intent == "recomendar_negocio":
-        rag_q = ("negocios recomendados oportunidad emprendimiento "
-                 "consumidor perfil Medellín cuadrante")
-        n_results = 8
+        negocio_extra = f" {tipo_negocio}" if tipo_negocio else ""
+        rag_q = (f"mejores zonas barrios para emprender{negocio_extra} "
+                 f"oportunidad poca competencia alto tráfico WiFi "
+                 f"créditos perfil consumidor Medellín")
+        n_results = 10
 
     else:
         rag_q = user_q or "contexto general Medellín emprendimiento WiFi"
@@ -439,8 +436,13 @@ def recuperar_datos(state: MedCityState) -> MedCityState:
                 print(f"  [recuperar] ERROR: {e}")
                 items = []
 
-    # Para comparaciones, oportunidades y consultas generales, también traer el doc global
-    if intent in ("comparar_zonas", "encontrar_oportunidad", "general") or state.get("_is_city_level"):
+    # Para comparaciones, oportunidades, recomendaciones sin zona y consultas generales, traer doc global
+    fetch_global = (
+        intent in ("comparar_zonas", "encontrar_oportunidad", "general")
+        or (intent == "recomendar_negocio" and not zone)
+        or state.get("_is_city_level")
+    )
+    if fetch_global:
         try:
             global_items = retrieve_rag_context(
                 "contexto general Medellín", n_results=1,
@@ -525,8 +527,12 @@ def construir_contexto(state: MedCityState) -> MedCityState:
         sections.append(doc.get("text", "Sin contenido"))
         sections.append("")
 
-    # Para comparaciones, agregar tabla resumen de scores
-    if intent in ("comparar_zonas", "encontrar_oportunidad") and len(docs) > 1:
+    # Para comparaciones, oportunidades y recomendaciones abiertas, agregar tabla resumen
+    needs_table = (
+        intent in ("comparar_zonas", "encontrar_oportunidad")
+        or (intent == "recomendar_negocio" and not zone)
+    )
+    if needs_table and len(docs) > 1:
         sections.append("--- TABLA COMPARATIVA ---")
         for doc in sorted(docs, key=lambda d: d.get("metadata", {}).get(
                 "score_oportunidad", 0), reverse=True):
@@ -579,10 +585,15 @@ _PROMPTS_POR_INTENT = {
         "Ordena de mejor a peor oportunidad y cierra con un consejo práctico."
     ),
     "recomendar_negocio": (
-        "TAREA: Recomienda 3 negocios para la zona. Para cada uno explica:\n"
-        "- Qué negocio montar y por qué funcionaría ahí\n"
-        "- Basado en: perfil de la gente, competencia actual (total emprendedores), créditos disponibles\n"
-        "Al final, di cuál es la mejor opción y por qué."
+        "TAREA: Recomienda las MEJORES zonas y negocios para emprender.\n"
+        "Si el usuario preguntó por una zona específica:\n"
+        "  - Recomienda 3 negocios para esa zona con datos\n"
+        "Si NO preguntó por zona específica (pregunta abierta):\n"
+        "  - Recomienda las 3-5 MEJORES zonas/barrios para ese tipo de negocio\n"
+        "  - Para cada zona: nombre, por qué es buena (tráfico, competencia, créditos)\n"
+        "  - Cifras concretas de cada zona (emprendedores, WiFi, créditos)\n"
+        "Siempre incluye: datos reales, nivel de competencia, acceso a créditos.\n"
+        "Cierra con la mejor opción y un consejo práctico."
     ),
     "comparar_zonas": (
         "TAREA: Compara las zonas con datos completos:\n"
