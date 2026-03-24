@@ -73,6 +73,33 @@ tab_dash, tab_chat = st.tabs(["📊 Dashboard", "💬 Asistente IA"])
 # TAB 1: DASHBOARD
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_dash:
+    # ── Preparar datos combinados ─────────────────────────────────────────────
+    # Normalizar barrio de créditos para merge
+    _cred_barrio_norm = (
+        creditos["barrio"]
+        .str.strip()
+        .str.lower()
+        .str.replace(r"\s+", " ", regex=True)
+        .str.replace(r"[.#]", "", regex=True)
+    )
+    creditos_norm = creditos.assign(barrio_norm=_cred_barrio_norm)
+
+    # Contar beneficiarios de créditos por barrio
+    cred_por_barrio = (
+        creditos_norm.groupby("barrio_norm")
+        .agg(n_creditados=("monto", "count"))
+        .reset_index()
+        .rename(columns={"barrio_norm": "barrio"})
+    )
+
+    # Contar beneficiarios de créditos por comuna
+    cred_por_comuna = (
+        creditos.dropna(subset=["comuna"])
+        .groupby("comuna")
+        .agg(n_creditados=("monto", "count"), monto_total=("monto", "sum"))
+        .reset_index()
+    )
+
     # ── KPIs ──────────────────────────────────────────────────────────────────
     total_emp = int(densidad_b["n_emprendedores"].sum())
     total_barrios = len(densidad_b)
@@ -80,13 +107,14 @@ with tab_dash:
     total_comunas = len(densidad_c)
     total_creditos = len(creditos)
     monto_total_cred = creditos["monto"].sum()
+    total_combinado = total_emp + total_creditos
 
     k1, k2, k3, k4, k5, k6 = st.columns(6)
-    k1.metric("Emprendedores", f"{total_emp:,}")
-    k2.metric("Barrios con datos", total_barrios)
-    k3.metric("Usuarios WiFi", f"{total_usuarios:,}")
-    k4.metric("Comunas", total_comunas)
-    k5.metric("Créditos otorgados", f"{total_creditos:,}")
+    k1.metric("Total emprendedores", f"{total_combinado:,}")
+    k2.metric("Artesanos registrados", f"{total_emp:,}")
+    k3.metric("Microempresarios (créditos)", f"{total_creditos:,}")
+    k4.metric("Usuarios WiFi", f"{total_usuarios:,}")
+    k5.metric("Barrios con datos", total_barrios)
     k6.metric("Monto financiado", f"${monto_total_cred:,.0f}")
 
     st.divider()
@@ -96,24 +124,36 @@ with tab_dash:
 
     with col1:
         st.subheader("Top 15 barrios por emprendedores")
-        top15 = densidad_b.nlargest(15, "n_emprendedores").sort_values("n_emprendedores")
-        fig_bar = px.bar(
-            top15,
-            x="n_emprendedores",
-            y="barrio",
-            orientation="h",
-            color="zona",
-            text="n_emprendedores",
-            color_discrete_sequence=px.colors.qualitative.Set2,
+        # Combinar artesanos (densidad_b) + creditados por barrio
+        top_combined = densidad_b[["barrio", "n_emprendedores", "zona"]].merge(
+            cred_por_barrio, on="barrio", how="outer",
         )
+        top_combined["n_emprendedores"] = top_combined["n_emprendedores"].fillna(0).astype(int)
+        top_combined["n_creditados"] = top_combined["n_creditados"].fillna(0).astype(int)
+        top_combined["total"] = top_combined["n_emprendedores"] + top_combined["n_creditados"]
+        top_combined["zona"] = top_combined["zona"].fillna("sin dato")
+        top15 = top_combined.nlargest(15, "total").sort_values("total")
+
+        fig_bar = go.Figure()
+        fig_bar.add_trace(go.Bar(
+            y=top15["barrio"], x=top15["n_emprendedores"],
+            name="Artesanos", orientation="h",
+            marker_color="#2ecc71", text=top15["n_emprendedores"],
+        ))
+        fig_bar.add_trace(go.Bar(
+            y=top15["barrio"], x=top15["n_creditados"],
+            name="Microemp. (créditos)", orientation="h",
+            marker_color="#e67e22", text=top15["n_creditados"],
+        ))
         fig_bar.update_layout(
+            barmode="stack",
             height=450,
             yaxis_title="",
-            xaxis_title="Emprendedores registrados",
-            legend_title="Zona",
-            margin=dict(l=10, r=10, t=10, b=10),
+            xaxis_title="Emprendedores",
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            margin=dict(l=10, r=10, t=30, b=10),
         )
-        fig_bar.update_traces(textposition="outside")
+        fig_bar.update_traces(textposition="inside")
         st.plotly_chart(fig_bar, width="stretch")
 
     with col2:
@@ -139,37 +179,51 @@ with tab_dash:
     col3, col4 = st.columns(2)
 
     with col3:
-        st.subheader("Densidad emprendedora por comuna")
-        dc = densidad_c.sort_values("densidad_x1000_hab", ascending=False)
-        fig_dens = px.bar(
-            dc,
-            x="nombre_comuna",
-            y="densidad_x1000_hab",
-            color="densidad_x1000_hab",
-            color_continuous_scale="RdYlGn",
-            text=dc["densidad_x1000_hab"].round(2),
+        st.subheader("Emprendedores por comuna (combinado)")
+        dc = densidad_c.merge(
+            cred_por_comuna[["comuna", "n_creditados"]],
+            on="comuna", how="left",
         )
+        dc["n_creditados"] = dc["n_creditados"].fillna(0).astype(int)
+        dc["total_emprendedores"] = dc["n_emprendedores"] + dc["n_creditados"]
+        dc = dc.sort_values("total_emprendedores", ascending=False)
+
+        fig_dens = go.Figure()
+        fig_dens.add_trace(go.Bar(
+            x=dc["nombre_comuna"], y=dc["n_emprendedores"],
+            name="Artesanos", marker_color="#2ecc71",
+            text=dc["n_emprendedores"],
+        ))
+        fig_dens.add_trace(go.Bar(
+            x=dc["nombre_comuna"], y=dc["n_creditados"],
+            name="Microemp. (créditos)", marker_color="#e67e22",
+            text=dc["n_creditados"],
+        ))
         fig_dens.update_layout(
+            barmode="stack",
             height=400,
             xaxis_title="",
-            yaxis_title="Emprendedores / 1,000 hab.",
-            coloraxis_showscale=False,
-            margin=dict(l=10, r=10, t=10, b=10),
+            yaxis_title="Emprendedores",
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            margin=dict(l=10, r=10, t=30, b=10),
         )
         fig_dens.update_xaxes(tickangle=45)
-        fig_dens.update_traces(textposition="outside")
+        fig_dens.update_traces(textposition="inside")
         st.plotly_chart(fig_dens, width="stretch")
 
     with col4:
-        st.subheader("Género de emprendedores")
-        sexo_counts = artesanos["sexo"].value_counts().reset_index()
-        sexo_counts.columns = ["Género", "Cantidad"]
+        st.subheader("Género de emprendedores (combinado)")
+        # Normalizar: artesanos femenino/masculino + créditos mujer/hombre
+        sexo_art = artesanos["sexo"].replace({"femenino": "Femenino", "masculino": "Masculino"})
+        sexo_cred = creditos["sexo"].replace({"mujer": "Femenino", "hombre": "Masculino", "corporacion": "Corporación"})
+        sexo_all = pd.concat([sexo_art, sexo_cred]).value_counts().reset_index()
+        sexo_all.columns = ["Género", "Cantidad"]
         fig_sexo = px.pie(
-            sexo_counts,
+            sexo_all,
             values="Cantidad",
             names="Género",
             hole=0.5,
-            color_discrete_map={"femenino": "#ff6b81", "masculino": "#4ecdc4"},
+            color_discrete_map={"Femenino": "#ff6b81", "Masculino": "#4ecdc4", "Corporación": "#f9ca24"},
         )
         fig_sexo.update_layout(
             height=400,
@@ -184,28 +238,30 @@ with tab_dash:
     col5, col6 = st.columns(2)
 
     with col5:
-        st.subheader("Tipos de emprendimiento")
-        tipo_counts = (
-            artesanos["tipo_de_emprendimiento"]
-            .value_counts()
-            .head(10)
-            .reset_index()
-        )
-        tipo_counts.columns = ["Tipo", "Cantidad"]
+        st.subheader("Tipos de emprendimiento (combinado)")
+        # Artesanos: tipo_de_emprendimiento + Créditos: actividad
+        tipos_art = artesanos["tipo_de_emprendimiento"].value_counts().reset_index()
+        tipos_art.columns = ["Tipo", "Cantidad"]
+        tipos_art["Fuente"] = "Artesanos"
+        tipos_cred = creditos["actividad"].value_counts().reset_index()
+        tipos_cred.columns = ["Tipo", "Cantidad"]
+        tipos_cred["Fuente"] = "Microemp. (créditos)"
+        tipos_all = pd.concat([tipos_art, tipos_cred], ignore_index=True)
         fig_tipo = px.bar(
-            tipo_counts,
+            tipos_all,
             x="Cantidad",
             y="Tipo",
             orientation="h",
-            color="Cantidad",
-            color_continuous_scale="Viridis",
+            color="Fuente",
             text="Cantidad",
+            color_discrete_map={"Artesanos": "#2ecc71", "Microemp. (créditos)": "#e67e22"},
+            barmode="group",
         )
         fig_tipo.update_layout(
             height=400,
             yaxis_title="",
-            coloraxis_showscale=False,
-            margin=dict(l=10, r=10, t=10, b=10),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            margin=dict(l=10, r=10, t=30, b=10),
         )
         fig_tipo.update_traces(textposition="outside")
         st.plotly_chart(fig_tipo, width="stretch")
@@ -244,7 +300,7 @@ with tab_dash:
 
     # ── Fila 4: Tráfico WiFi vs Emprendedores (scatter) ──────────────────────
     st.subheader("Tráfico WiFi vs Emprendedores por barrio")
-    st.caption("Tamaño = usuarios WiFi | Color = zona geográfica — Los barrios en la esquina superior izquierda tienen mayor oportunidad (alto tráfico, pocos emprendedores)")
+    st.caption("Tamaño = usuarios WiFi | Color = zona geográfica — Incluye artesanos + microempresarios creditados")
 
     # Merge flujo con densidad para scatter
     scatter_df = flujo_b.merge(
@@ -252,6 +308,15 @@ with tab_dash:
         on="barrio_norm",
         how="inner",
     )
+    # Agregar creditados por barrio al scatter
+    scatter_df = scatter_df.merge(
+        cred_por_barrio.rename(columns={"barrio": "barrio_norm"}),
+        on="barrio_norm",
+        how="left",
+    )
+    scatter_df["n_creditados"] = scatter_df["n_creditados"].fillna(0).astype(int)
+    scatter_df["total_emprendedores"] = scatter_df["n_emprendedores"] + scatter_df["n_creditados"]
+
     scatter_df = scatter_df.merge(
         master[["barrio_norm", "total_usuarios"]],
         on="barrio_norm",
@@ -261,7 +326,7 @@ with tab_dash:
 
     fig_scatter = px.scatter(
         scatter_df,
-        x="n_emprendedores",
+        x="total_emprendedores",
         y="total_registros",
         size="total_usuarios",
         color="zona",
@@ -269,10 +334,11 @@ with tab_dash:
         text="barrio_norm",
         size_max=50,
         color_discrete_sequence=px.colors.qualitative.Bold,
+        hover_data={"n_emprendedores": True, "n_creditados": True},
     )
     fig_scatter.update_layout(
         height=500,
-        xaxis_title="Emprendedores registrados",
+        xaxis_title="Emprendedores (artesanos + creditados)",
         yaxis_title="Conexiones WiFi totales",
         margin=dict(l=10, r=10, t=10, b=10),
     )
@@ -327,28 +393,28 @@ with tab_dash:
 
     st.divider()
 
-    # ── Fila 6: Créditos a microempresarios ──────────────────────────────────
-    st.subheader("💳 Créditos otorgados a microempresarios")
+    # ── Fila 6: Detalle financiero de créditos ──────────────────────────────
+    st.subheader("💳 Detalle financiero de créditos a microempresarios")
     col9, col10 = st.columns(2)
 
     with col9:
         st.markdown("**Top 15 barrios por monto financiado**")
-        cred_barrio = (
+        cred_barrio_fin = (
             creditos.groupby("barrio")
             .agg(n_creditos=("monto", "count"), monto_total=("monto", "sum"))
             .sort_values("monto_total", ascending=False)
             .head(15)
             .reset_index()
         )
-        cred_barrio = cred_barrio.sort_values("monto_total")
+        cred_barrio_fin = cred_barrio_fin.sort_values("monto_total")
         fig_cred_barrio = px.bar(
-            cred_barrio,
+            cred_barrio_fin,
             x="monto_total",
             y="barrio",
             orientation="h",
             color="n_creditos",
             color_continuous_scale="Oranges",
-            text=cred_barrio["monto_total"].apply(lambda x: f"${x:,.0f}"),
+            text=cred_barrio_fin["monto_total"].apply(lambda x: f"${x:,.0f}"),
         )
         fig_cred_barrio.update_layout(
             height=450,
@@ -361,48 +427,25 @@ with tab_dash:
         st.plotly_chart(fig_cred_barrio, width="stretch")
 
     with col10:
-        st.markdown("**Distribución por actividad económica**")
-        activ_counts = creditos["actividad"].value_counts().reset_index()
-        activ_counts.columns = ["Actividad", "Créditos"]
-        fig_activ = px.pie(
-            activ_counts,
-            values="Créditos",
-            names="Actividad",
-            hole=0.45,
-            color_discrete_sequence=px.colors.qualitative.Set3,
-        )
-        fig_activ.update_layout(
-            height=450,
-            margin=dict(l=10, r=10, t=10, b=10),
-            legend=dict(orientation="h", yanchor="bottom", y=-0.2),
-        )
-        fig_activ.update_traces(textinfo="percent+label")
-        st.plotly_chart(fig_activ, width="stretch")
-
-    st.divider()
-
-    col11, col12 = st.columns(2)
-
-    with col11:
         st.markdown("**Monto financiado por comuna**")
-        cred_comuna = (
+        cred_comuna_fin = (
             creditos.dropna(subset=["comuna"])
             .groupby("comuna")
             .agg(n_creditos=("monto", "count"), monto_total=("monto", "sum"))
             .sort_values("monto_total", ascending=False)
             .reset_index()
         )
-        cred_comuna["comuna"] = cred_comuna["comuna"].astype(int).astype(str)
+        cred_comuna_fin["comuna"] = cred_comuna_fin["comuna"].astype(int).astype(str)
         fig_cred_comuna = px.bar(
-            cred_comuna,
+            cred_comuna_fin,
             x="comuna",
             y="monto_total",
             color="n_creditos",
             color_continuous_scale="Teal",
-            text=cred_comuna["monto_total"].apply(lambda x: f"${x:,.0f}"),
+            text=cred_comuna_fin["monto_total"].apply(lambda x: f"${x:,.0f}"),
         )
         fig_cred_comuna.update_layout(
-            height=400,
+            height=450,
             xaxis_title="Comuna",
             yaxis_title="Monto total (COP)",
             coloraxis_colorbar_title="# Créditos",
@@ -410,24 +453,6 @@ with tab_dash:
         )
         fig_cred_comuna.update_traces(textposition="outside")
         st.plotly_chart(fig_cred_comuna, width="stretch")
-
-    with col12:
-        st.markdown("**Género de beneficiarios de créditos**")
-        sexo_cred = creditos["sexo"].value_counts().reset_index()
-        sexo_cred.columns = ["Género", "Créditos"]
-        fig_sexo_cred = px.pie(
-            sexo_cred,
-            values="Créditos",
-            names="Género",
-            hole=0.5,
-            color_discrete_map={"mujer": "#ff6b81", "hombre": "#4ecdc4"},
-        )
-        fig_sexo_cred.update_layout(
-            height=400,
-            margin=dict(l=10, r=10, t=10, b=10),
-        )
-        fig_sexo_cred.update_traces(textinfo="percent+value")
-        st.plotly_chart(fig_sexo_cred, width="stretch")
 
     st.divider()
 
